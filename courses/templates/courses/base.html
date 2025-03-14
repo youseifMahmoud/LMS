@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LearnHub LMS{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'courses/css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="{% url 'home' %}" class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span class="text-xl font-bold">LearnHub</span>
+            </a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="{% url 'home' %}" class="text-gray-600 hover:text-indigo-600">Home</a>
+                <a href="{% url 'course_list' %}" class="text-gray-600 hover:text-indigo-600">Courses</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-indigo-600">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="text-gray-600 hover:text-indigo-600">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-indigo-600">Login</a>
+                    <a href="{% url 'register' %}" class="text-gray-600 hover:text-indigo-600">Register</a>
+                {% endif %}
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-2 space-y-2">
+                <a href="{% url 'home' %}" class="block text-gray-600 hover:text-indigo-600">Home</a>
+                <a href="{% url 'course_list' %}" class="block text-gray-600 hover:text-indigo-600">Courses</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="block text-gray-600 hover:text-indigo-600">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="block text-gray-600 hover:text-indigo-600">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block text-gray-600 hover:text-indigo-600">Login</a>
+                    <a href="{% url 'register' %}" class="block text-gray-600 hover:text-indigo-600">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">LearnHub</h3>
+                    <p class="text-gray-400">Your gateway to knowledge and skills development</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'course_list' %}" class="text-gray-400 hover:text-white">Courses</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>© {% now "Y" %} LearnHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'courses/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}{{ lesson.title }} | {{ course.title }} | LearnHub{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="grid md:grid-cols-4 gap-8">
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-lg shadow-md sticky top-6">
+                <div class="p-4">
+                    <h3 class="font-bold mb-4">{{ course.title }}</h3>
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Progress</span>
+                            <span class="text-sm font-medium">{{ progress }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ progress }}%"></div>
+                        </div>
+                    </div>
+                    <ul class="space-y-1 mt-4">
+                        {% for course_lesson in course.lessons.all %}
+                        <li>
+                            <a href="{% url 'lesson_detail' course.id course_lesson.id %}" 
+                               class="flex items-center px-3 py-2 rounded-md {% if lesson.id == course_lesson.id %}bg-indigo-100 text-indigo-600{% else %}hover:bg-gray-100{% endif %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 {% if completed_lessons|contains:course_lesson.id %}text-green-500{% else %}text-gray-400{% endif %}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    {% if completed_lessons|contains:course_lesson.id %}
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    {% else %}
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    {% endif %}
+                                </svg>
+                                <span>{{ course_lesson.title }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="md:col-span-3">
+            <div class="bg-white rounded-lg shadow-md mb-8">
+                <div class="p-6">
+                    <h1 class="text-2xl font-bold mb-4">{{ lesson.title }}</h1>
+                    <div class="prose max-w-none">
+                        {{ lesson.content|safe }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                {% if prev_lesson %}
+                <a href="{% url 'lesson_detail' course.id prev_lesson.id %}" class="flex items-center text-indigo-600 hover:text-indigo-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Previous Lesson
+                </a>
+                {% else %}
+                <div></div>
+                {% endif %}
+                
+                {% if not lesson_completed %}
+                <form method="post" action="{% url 'complete_lesson' course.id lesson.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">
+                        Mark as Complete
+                    </button>
+                </form>
+                {% else %}
+                <div class="flex items-center text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Completed
+                </div>
+                {% endif %}
+                
+                {% if next_lesson %}
+                <a href="{% url 'lesson_detail' course.id next_lesson.id %}" class="flex items-center text-indigo-600 hover:text-indigo-800">
+                    Next Lesson
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                {% else %}
+                <a href="{% url 'dashboard' %}" class="flex items-center text-indigo-600 hover:text-indigo-800">
+                    Back to Dashboard
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
