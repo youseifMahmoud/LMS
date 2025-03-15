@@ -187,3 +187,23 @@ def certificate(request, enrollment_id):
     return render(request, 'courses/certificate.html', {
         'enrollment': enrollment
     })
+
+@login_required
+def create_course(request):
+    # التحقق مما إذا كان المستخدم معلمًا
+    if not hasattr(request.user, 'profile') or not request.user.profile.is_teacher:
+        messages.error(request, 'Only teachers can create courses.')
+        return redirect('course_list')
+
+    if request.method == 'POST':
+        form = CourseCreationForm(request.POST)
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.instructor = request.user  # تعيين المستخدم الحالي كمعلم
+            course.save()
+            messages.success(request, f'Course "{course.title}" created successfully.')
+            return redirect('course_list')
+    else:
+        form = CourseCreationForm()
+    
+    return render(request, 'courses/create_course.html', {'form': form})
