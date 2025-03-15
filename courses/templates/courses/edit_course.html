@@ -1,0 +1,120 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}تعديل الدورة | LearnHub{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">تعديل الدورة: {{ course.title }}</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586l-1.293-1.293z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-700">
+                                يرجى تصحيح الأخطاء أدناه.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="id_title" class="block text-sm font-medium text-gray-700">عنوان الدورة</label>
+                        <input type="text" name="title" id="id_title" value="{{ form.title.value|default:course.title }}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        {% if form.title.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.title.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="id_description" class="block text-sm font-medium text-gray-700">وصف الدورة</label>
+                        <textarea name="description" id="id_description" rows="5" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">{{ form.description.value|default:course.description }}</textarea>
+                        {% if form.description.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="id_image" class="block text-sm font-medium text-gray-700">صورة الدورة</label>
+                        <div class="mt-1 flex items-center">
+                            {% if course.image %}
+                            <div class="mb-3">
+                                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="h-32 w-auto object-cover rounded-md">
+                                <p class="mt-1 text-sm text-gray-500">الصورة الحالية</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mt-1">
+                            <input type="file" name="image" id="id_image" accept="image/*" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500">
+                            اترك هذا الحقل فارغًا للاحتفاظ بالصورة الحالية.
+                        </p>
+                        {% if form.image.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.image.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <a href="{% url 'dashboard' %}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4">
+                            إلغاء
+                        </a>
+                        <button type="submit" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            حفظ التغييرات
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">الدروس</h2>
+                <a href="{% url 'create_lesson' course.id %}" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    إضافة درس جديد
+                </a>
+            </div>
+            
+            <ul class="space-y-3">
+                {% for lesson in course.lessons.all %}
+                <li class="flex justify-between items-center p-3 border rounded-md hover:bg-gray-50">
+                    <div class="flex items-center">
+                        <span class="text-gray-500 mr-3">{{ lesson.order }}</span>
+                        <span>{{ lesson.title }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <a href="{% url 'edit_lesson' course.id lesson.id %}" class="text-indigo-600 hover:text-indigo-800 mr-4">
+                            تعديل
+                        </a>
+                        <form method="post" action="{% url 'delete_lesson' course.id lesson.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا الدرس؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600 hover:text-red-800">
+                                حذف
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-center py-8 text-gray-500">
+                    لم تقم بإضافة أي دروس بعد.
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

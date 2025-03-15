@@ -11,7 +11,7 @@ class UserRegistrationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'role')
     
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -21,9 +21,9 @@ class UserRegistrationForm(UserCreationForm):
         
         if commit:
             user.save()
-            UserProfile.objects.create(
+            UserProfile.objects.get_or_create(
                 user=user,
-                role=self.cleaned_data['role']
+                defaults={'role': self.cleaned_data['role']}
             )
         
         return user

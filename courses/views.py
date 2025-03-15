@@ -4,12 +4,9 @@ from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.utils import timezone
 from .models import Course, Lesson, Enrollment, LessonProgress, UserProfile
-from .forms import CourseCreationForm
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Course, Lesson, Enrollment, LessonProgress, UserProfile
+# تغيير الاستيراد من CourseCreationForm إلى CourseForm
 from .forms import CourseForm, LessonForm
-from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, Avg
 
 def home(request):
@@ -149,42 +146,6 @@ def complete_lesson(request, course_id, lesson_id):
             return redirect('lesson_detail', course_id=course.id, lesson_id=next_lesson.id)
     
     return redirect('lesson_detail', course_id=course_id, lesson_id=lesson_id)
-
-@login_required
-def dashboard(request):
-    active_tab = request.GET.get('tab', 'in_progress')
-    
-    # Get enrollments
-    in_progress_enrollments = Enrollment.objects.filter(
-        user=request.user,
-        completed=False
-    ).select_related('course')
-    
-    completed_enrollments = Enrollment.objects.filter(
-        user=request.user,
-        completed=True
-    ).select_related('course')
-    
-    # Calculate progress for each enrollment
-    for enrollment in in_progress_enrollments:
-        total_lessons = enrollment.course.lessons.count()
-        if total_lessons > 0:
-            completed_lessons = LessonProgress.objects.filter(
-                user=request.user,
-                lesson__course=enrollment.course,
-                completed=True
-            ).count()
-            enrollment.progress = int((completed_lessons / total_lessons) * 100)
-        else:
-            enrollment.progress = 0
-    
-    return render(request, 'courses/dashboard.html', {
-        'in_progress_enrollments': in_progress_enrollments,
-        'completed_enrollments': completed_enrollments,
-        'in_progress_count': in_progress_enrollments.count(),
-        'completed_count': completed_enrollments.count(),
-        'active_tab': active_tab
-    })
 
 @login_required
 def certificate(request, enrollment_id):
