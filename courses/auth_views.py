@@ -1,18 +1,16 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib import messages
-from .models import UserProfile
+from .forms import UserRegistrationForm
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            UserProfile.objects.create(user=user)  
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}. You can now log in.')
+            messages.success(request, f'تم إنشاء حساب {username} بنجاح. يمكنك الآن تسجيل الدخول.')
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})

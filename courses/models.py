@@ -5,9 +5,9 @@ class Course(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
+    image = models.ImageField(upload_to='course_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    image = models.URLField(blank=True, null=True)
     
     def __str__(self):
         return self.title
@@ -55,8 +55,19 @@ from django.contrib.auth.models import User
 
 # نموذج ملف تعريف المستخدم الممتد
 class UserProfile(models.Model):
+    USER_ROLE_CHOICES = (
+        ('student', 'طالب'),
+        ('instructor', 'معلم'),
+    )
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    is_teacher = models.BooleanField(default=False)
-
+    role = models.CharField(max_length=10, choices=USER_ROLE_CHOICES, default='student')
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} - {self.get_role_display()}"
+    
+    @property
+    def is_instructor(self):
+        return self.role == 'instructor'

@@ -1,18 +1,18 @@
 {% extends 'courses/base.html' %}
 
-{% block title %}Register | LearnHub{% endblock %}
+{% block title %}تسجيل حساب جديد | LearnHub{% endblock %}
 
 {% block content %}
 <div class="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div>
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Create your account
+                إنشاء حساب جديد
             </h2>
             <p class="mt-2 text-center text-sm text-gray-600">
-                Or
+                أو
                 <a href="{% url 'login' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    sign in to your existing account
+                    تسجيل الدخول إلى حسابك الحالي
                 </a>
             </p>
         </div>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-red-700">
-                        Please correct the errors below.
+                        يرجى تصحيح الأخطاء أدناه.
                     </p>
                     <ul class="list-disc pl-5 space-y-1 mt-2">
                         {% for field in form %}
@@ -46,36 +46,50 @@
         
         <form class="mt-8 space-y-6" method="post">
             {% csrf_token %}
-            <div class="rounded-md shadow-sm -space-y-px">
+            <div class="rounded-md shadow-sm space-y-4">
                 <div>
-                    <label for="id_username" class="sr-only">Username</label>
-                    <input id="id_username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Username">
+                    <label for="id_username" class="block text-sm font-medium text-gray-700">اسم المستخدم</label>
+                    <input id="id_username" name="username" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="اسم المستخدم">
                 </div>
-                <div>
-                    <label for="id_email" class="sr-only">Email</label>
-                    <input id="id_email" name="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Email">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_first_name" class="block text-sm font-medium text-gray-700">الاسم الأول</label>
+                        <input id="id_first_name" name="first_name" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="الاسم الأول">
+                    </div>
+                    <div>
+                        <label for="id_last_name" class="block text-sm font-medium text-gray-700">الاسم الأخير</label>
+                        <input id="id_last_name" name="last_name" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="الاسم الأخير">
+                    </div>
                 </div>
+                
                 <div>
-                    <label for="id_first_name" class="sr-only">First Name</label>
-                    <input id="id_first_name" name="first_name" type="text" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="First Name">
+                    <label for="id_email" class="block text-sm font-medium text-gray-700">البريد الإلكتروني</label>
+                    <input id="id_email" name="email" type="email" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="البريد الإلكتروني">
                 </div>
+                
                 <div>
-                    <label for="id_last_name" class="sr-only">Last Name</label>
-                    <input id="id_last_name" name="last_name" type="text" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Last Name">
+                    <label for="id_role" class="block text-sm font-medium text-gray-700">نوع الحساب</label>
+                    <select id="id_role" name="role" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="student">طالب</option>
+                        <option value="instructor">معلم</option>
+                    </select>
                 </div>
+                
                 <div>
-                    <label for="id_password1" class="sr-only">Password</label>
-                    <input id="id_password1" name="password1" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+                    <label for="id_password1" class="block text-sm font-medium text-gray-700">كلمة المرور</label>
+                    <input id="id_password1" name="password1" type="password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="كلمة المرور">
                 </div>
+                
                 <div>
-                    <label for="id_password2" class="sr-only">Confirm Password</label>
-                    <input id="id_password2" name="password2" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Confirm Password">
+                    <label for="id_password2" class="block text-sm font-medium text-gray-700">تأكيد كلمة المرور</label>
+                    <input id="id_password2" name="password2" type="password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="تأكيد كلمة المرور">
                 </div>
             </div>
 
             <div>
                 <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Create Account
+                    إنشاء حساب
                 </button>
             </div>
         </form>

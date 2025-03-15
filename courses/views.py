@@ -5,6 +5,12 @@ from django.contrib import messages
 from django.utils import timezone
 from .models import Course, Lesson, Enrollment, LessonProgress, UserProfile
 from .forms import CourseCreationForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Course, Lesson, Enrollment, LessonProgress, UserProfile
+from .forms import CourseForm, LessonForm
+from django.contrib import messages
+from django.db.models import Count, Avg
 
 def home(request):
     featured_courses = Course.objects.all()[:3]
@@ -188,22 +194,154 @@ def certificate(request, enrollment_id):
         'enrollment': enrollment
     })
 
-@login_required
-def create_course(request):
-    # التحقق مما إذا كان المستخدم معلمًا
-    if not hasattr(request.user, 'profile') or not request.user.profile.is_teacher:
-        messages.error(request, 'Only teachers can create courses.')
-        return redirect('course_list')
+def is_instructor(user):
+    try:
+        return user.profile.is_instructor
+    except UserProfile.DoesNotExist:
+        return False
 
+@login_required
+def dashboard(request):
+    user = request.user
+    active_tab = request.GET.get('tab', 'in_progress')
+    
+    if is_instructor(user):
+        # المعلم - عرض الدورات التي يقوم بتدريسها
+        instructor_courses = Course.objects.filter(instructor=user)
+        instructor_courses_count = instructor_courses.count()
+        
+        # إحصائيات المعلم
+        total_students = Enrollment.objects.filter(course__instructor=user).count()
+        # يمكن إضافة المزيد من الإحصائيات هنا
+        
+        return render(request, 'courses/dashboard.html', {
+            'instructor_courses': instructor_courses,
+            'instructor_courses_count': instructor_courses_count,
+            'total_students': total_students,
+            'average_rating': 0.0,  # يمكن حساب هذا إذا كان لديك نظام تقييم
+        })
+    else:
+        # الطالب - عرض الدورات المسجل فيها
+        in_progress_enrollments = Enrollment.objects.filter(
+            user=user,
+            completed=False
+        ).select_related('course')
+        
+        completed_enrollments = Enrollment.objects.filter(
+            user=user,
+            completed=True
+        ).select_related('course')
+        
+        # حساب التقدم لكل تسجيل
+        for enrollment in in_progress_enrollments:
+            total_lessons = enrollment.course.lessons.count()
+            if total_lessons > 0:
+                completed_lessons = LessonProgress.objects.filter(
+                    user=user,
+                    lesson__course=enrollment.course,
+                    completed=True
+                ).count()
+                enrollment.progress = int((completed_lessons / total_lessons) * 100)
+            else:
+                enrollment.progress = 0
+        
+        return render(request, 'courses/dashboard.html', {
+            'in_progress_enrollments': in_progress_enrollments,
+            'completed_enrollments': completed_enrollments,
+            'in_progress_count': in_progress_enrollments.count(),
+            'completed_count': completed_enrollments.count(),
+            'active_tab': active_tab
+        })
+
+@login_required
+@user_passes_test(is_instructor)
+def create_course(request):
     if request.method == 'POST':
-        form = CourseCreationForm(request.POST)
+        form = CourseForm(request.POST, request.FILES)
         if form.is_valid():
             course = form.save(commit=False)
-            course.instructor = request.user  # تعيين المستخدم الحالي كمعلم
+            course.instructor = request.user
             course.save()
-            messages.success(request, f'Course "{course.title}" created successfully.')
-            return redirect('course_list')
+            messages.success(request, 'تم إنشاء الدورة بنجاح.')
+            return redirect('edit_course', pk=course.id)
     else:
-        form = CourseCreationForm()
+        form = CourseForm()
     
-    return render(request, 'courses/create_course.html', {'form': form})
+    return render(request, 'courses/create_course.html', {
+        'form': form
+    })
+
+@login_required
+@user_passes_test(is_instructor)
+def edit_course(request, pk):
+    course = get_object_or_404(Course, pk=pk, instructor=request.user)
+    
+    if request.method == 'POST':
+        form = CourseForm(request.POST, request.FILES, instance=course)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم تحديث الدورة بنجاح.')
+            return redirect('edit_course', pk=course.id)
+    else:
+        form = CourseForm(instance=course)
+    
+    return render(request, 'courses/edit_course.html', {
+        'form': form,
+        'course': course
+    })
+
+@login_required
+@user_passes_test(is_instructor)
+def create_lesson(request, course_id):
+    course = get_object_or_404(Course, pk=course_id, instructor=request.user)
+    next_order = course.lessons.count() + 1
+    
+    if request.method == 'POST':
+        form = LessonForm(request.POST)
+        if form.is_valid():
+            lesson = form.save(commit=False)
+            lesson.course = course
+            lesson.save()
+            messages.success(request, 'تم إضافة الدرس بنجاح.')
+            return redirect('edit_course', pk=course.id)
+    else:
+        form = LessonForm(initial={'order': next_order})
+    
+    return render(request, 'courses/create_lesson.html', {
+        'form': form,
+        'course': course,
+        'next_order': next_order
+    })
+
+@login_required
+@user_passes_test(is_instructor)
+def edit_lesson(request, course_id, lesson_id):
+    course = get_object_or_404(Course, pk=course_id, instructor=request.user)
+    lesson = get_object_or_404(Lesson, pk=lesson_id, course=course)
+    
+    if request.method == 'POST':
+        form = LessonForm(request.POST, instance=lesson)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم تحديث الدرس بنجاح.')
+            return redirect('edit_course', pk=course.id)
+    else:
+        form = LessonForm(instance=lesson)
+    
+    return render(request, 'courses/edit_lesson.html', {
+        'form': form,
+        'course': course,
+        'lesson': lesson
+    })
+
+@login_required
+@user_passes_test(is_instructor)
+def delete_lesson(request, course_id, lesson_id):
+    course = get_object_or_404(Course, pk=course_id, instructor=request.user)
+    lesson = get_object_or_404(Lesson, pk=lesson_id, course=course)
+    
+    if request.method == 'POST':
+        lesson.delete()
+        messages.success(request, 'تم حذف الدرس بنجاح.')
+    
+    return redirect('edit_course', pk=course.id)
