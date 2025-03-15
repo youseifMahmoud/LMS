@@ -8,6 +8,6 @@ admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Course)
 admin.site.register(Lesson)
 admin.site.register(Enrollment)
-admin.site.register(LessonProgress)from django.contrib import admin
+admin.site.register(LessonProgress)
 
 # Register your models here.
