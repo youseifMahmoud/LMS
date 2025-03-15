@@ -23,6 +23,14 @@ class CourseListView(ListView):
         if search_query:
             queryset = queryset.filter(title__icontains=search_query)
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+            context['is_teacher'] = self.request.user.profile.is_teacher
+        else:
+            context['is_teacher'] = False
+        return context
 
 def course_detail(request, pk):
     course = get_object_or_404(Course, pk=pk)
