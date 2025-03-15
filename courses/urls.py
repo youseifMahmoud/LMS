@@ -10,4 +10,7 @@ urlpatterns = [
     path('courses/<int:course_id>/lessons/<int:lesson_id>/complete/', views.complete_lesson, name='complete_lesson'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('certificate/<int:enrollment_id>/', views.certificate, name='certificate'),
+    path('courses/create/', views.create_course, name='create_course'),  # مسار جديد
+
 ]
+
