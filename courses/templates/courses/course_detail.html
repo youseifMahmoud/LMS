@@ -62,14 +62,28 @@
             <div class="mb-8">
                 <h2 class="text-2xl font-bold mb-4">About the Instructor</h2>
                 <div class="flex items-center gap-4 mb-4">
-                    <div class="h-16 w-16 rounded-full bg-gray-200"></div>
+                    <div class="h-16 w-16 rounded-full overflow-hidden bg-gray-200">
+                        {% if course.instructor.profile.profile_picture %}
+                            <img src="{{ course.instructor.profile.profile_picture.url }}" alt="{{ course.instructor.get_full_name }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
                     <div>
                         <h3 class="font-bold">{{ course.instructor.get_full_name|default:course.instructor.username }}</h3>
                         <p class="text-gray-600">Instructor</p>
                     </div>
                 </div>
                 <p class="text-gray-600">
-                    {{ instructor_bio|default:"An experienced instructor with expertise in this subject area." }}
+                    {% if course.instructor.profile.bio %}
+                        {{ course.instructor.profile.bio }}
+                    {% else %}
+                        {{ instructor_bio|default:"An experienced instructor with expertise in this subject area." }}
+                    {% endif %}
                 </p>
             </div>
         </div>
@@ -88,16 +102,22 @@
                     
                     {% if user.is_authenticated %}
                         {% if is_enrolled %}
-                        <a href="{% url 'lesson_detail' course.id course.lessons.first.id %}" class="block text-center bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4">
-                            Continue Learning
-                        </a>
+                            {% if course.lessons.exists %}
+                                <a href="{% url 'lesson_detail' course.id course.lessons.first.id %}" class="block text-center bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4">
+                                    Continue Learning
+                                </a>
+                            {% else %}
+                                <div class="block text-center bg-gray-400 text-white py-3 px-4 rounded-md mb-4">
+                                    No Lessons Available
+                                </div>
+                            {% endif %}
                         {% else %}
-                        <form method="post" action="{% url 'enroll_course' course.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4">
-                                Enroll Now
-                            </button>
-                        </form>
+                            <form method="post" action="{% url 'enroll_course' course.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4">
+                                    Enroll Now
+                                </button>
+                            </form>
                         {% endif %}
                     {% else %}
                         <a href="{% url 'login' %}?next={% url 'course_detail' course.id %}" class="block text-center bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4">

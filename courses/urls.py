@@ -10,6 +10,8 @@ urlpatterns = [
     path('courses/<int:course_id>/lessons/<int:lesson_id>/complete/', views.complete_lesson, name='complete_lesson'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('certificate/<int:enrollment_id>/', views.certificate, name='certificate'),
+    path('profile/', views.profile_view, name='profile'),
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
     
     # روابط المعلم
     path('courses/create/', views.create_course, name='create_course'),

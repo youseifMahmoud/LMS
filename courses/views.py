@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 from .models import Course, Lesson, Enrollment, LessonProgress, UserProfile
 # تغيير الاستيراد من CourseCreationForm إلى CourseForm
-from .forms import CourseForm, LessonForm
+from .forms import CourseForm, LessonForm, ProfileEditForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, Avg
 
@@ -75,7 +75,7 @@ def lesson_detail(request, course_id, lesson_id):
         defaults={'completed': False}
     )
     
-    # Get completed lessons
+    # Get completed lessons - تأكد من أن هذا يعيد قائمة من معرفات الدروس
     completed_lessons = LessonProgress.objects.filter(
         user=request.user,
         lesson__course=course,
@@ -306,3 +306,58 @@ def delete_lesson(request, course_id, lesson_id):
         messages.success(request, 'تم حذف الدرس بنجاح.')
     
     return redirect('edit_course', pk=course.id)
+
+@login_required
+def profile_view(request):
+    user = request.user
+    profile = get_object_or_404(UserProfile, user=user)
+    
+    if profile.is_instructor:
+        # إحصائيات المعلم
+        courses_count = Course.objects.filter(instructor=user).count()
+        students_count = Enrollment.objects.filter(course__instructor=user).values('user').distinct().count()
+        
+        # الدورات التي يقوم بتدريسها
+        courses = Course.objects.filter(instructor=user)
+        
+        context = {
+            'profile': profile,
+            'courses_count': courses_count,
+            'students_count': students_count,
+            'courses': courses,
+        }
+    else:
+        # إحصائيات الطالب
+        enrolled_courses_count = Enrollment.objects.filter(user=user).count()
+        completed_courses_count = Enrollment.objects.filter(user=user, completed=True).count()
+        
+        # الدورات المسجل فيها
+        enrollments = Enrollment.objects.filter(user=user).select_related('course')
+        
+        context = {
+            'profile': profile,
+            'enrolled_courses_count': enrolled_courses_count,
+            'completed_courses_count': completed_courses_count,
+            'enrollments': enrollments,
+        }
+    
+    return render(request, 'courses/profile.html', context)
+
+@login_required
+def profile_edit(request):
+    user = request.user
+    profile = get_object_or_404(UserProfile, user=user)
+    
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم تحديث الملف الشخصي بنجاح.')
+            return redirect('profile')
+    else:
+        form = ProfileEditForm(instance=profile)
+    
+    return render(request, 'courses/profile_edit.html', {
+        'form': form,
+        'profile': profile,
+    })

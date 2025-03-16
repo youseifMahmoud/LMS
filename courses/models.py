@@ -50,6 +50,10 @@ class LessonProgress(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.lesson.title}"
 
+from django.db import models
+from django.contrib.auth.models import User
+
+# نموذج ملف تعريف المستخدم الممتد
 class UserProfile(models.Model):
     USER_ROLE_CHOICES = (
         ('student', 'طالب'),
