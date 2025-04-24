@@ -1,0 +1,334 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}التسجيل | منصة التعلم{% endblock %}
+
+{% block content %}
+<div dir="rtl" class="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl w-full space-y-8 bg-white rounded-lg shadow-lg p-8 transform hover:shadow-xl transition-all duration-300 animate-fade-in">
+        <div class="text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-indigo-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            <h1 class="text-3xl font-bold mb-2 text-gray-900">إنشاء حساب جديد</h1>
+            <p class="text-gray-600 mb-6">انضم إلى منصة التعلم واستمتع بتجربة تعليمية فريدة</p>
+        </div>
+        
+        <form method="post" novalidate class="space-y-6">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="bg-red-50 border-r-4 border-red-500 p-4 mb-6 rounded-md animate-pulse">
+                <div class="flex">
+                    <div class="flex-shrink-0 mr-3">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586l-1.293-1.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="mr-3 flex-grow">
+                        <p class="text-sm text-red-700 text-right">
+                            يرجى تصحيح الأخطاء أدناه.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- اسم المستخدم -->
+                <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        اسم المستخدم
+                    </label>
+                    <div class="relative">
+                        <!-- تمت إزالة الأيقونة من هنا -->
+                        <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.username.errors %}border-red-500{% endif %}" value="{{ form.username.value|default:'' }}" placeholder="أدخل اسم المستخدم">
+                    </div>
+                    {% if form.username.errors %}
+                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {{ form.username.errors.0 }}
+                    </p>
+                    {% else %}
+                    <p class="mt-2 text-xs text-gray-500">{{ form.username.help_text }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- البريد الإلكتروني -->
+                <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        البريد الإلكتروني
+                    </label>
+                    <div class="relative">
+                        <!-- تمت إزالة الأيقونة من هنا -->
+                        <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.email.errors %}border-red-500{% endif %}" value="{{ form.email.value|default:'' }}" placeholder="أدخل البريد الإلكتروني">
+                    </div>
+                    {% if form.email.errors %}
+                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {{ form.email.errors.0 }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <!-- الاسم الأول -->
+                <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        الاسم الأول
+                    </label>
+                    <div class="relative">
+                        <!-- تمت إزالة الأيقونة من هنا -->
+                        <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.first_name.errors %}border-red-500{% endif %}" value="{{ form.first_name.value|default:'' }}" placeholder="أدخل الاسم الأول">
+                    </div>
+                    {% if form.first_name.errors %}
+                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {{ form.first_name.errors.0 }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <!-- الاسم الأخير -->
+                <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        الاسم الأخير
+                    </label>
+                    <div class="relative">
+                        <!-- تمت إزالة الأيقونة من هنا -->
+                        <input type="text" name="{{ form.last_name.name }}" id="{{ form.last_name.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.last_name.errors %}border-red-500{% endif %}" value="{{ form.last_name.value|default:'' }}" placeholder="أدخل الاسم الأخير">
+                    </div>
+                    {% if form.last_name.errors %}
+                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {{ form.last_name.errors.0 }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <!-- كلمة المرور -->
+                <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        كلمة المرور
+                    </label>
+                    <div class="relative">
+                        <!-- تمت إزالة الأيقونة من هنا -->
+                        <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.password1.errors %}border-red-500{% endif %}" placeholder="أدخل كلمة المرور">
+                    </div>
+                    {% if form.password1.errors %}
+                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {{ form.password1.errors.0 }}
+                    </p>
+                    {% else %}
+                    <p class="mt-2 text-xs text-gray-500">{{ form.password1.help_text }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- تأكيد كلمة المرور -->
+                <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        تأكيد كلمة المرور
+                    </label>
+                    <div class="relative">
+                        <!-- تمت إزالة الأيقونة من هنا -->
+                        <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.password2.errors %}border-red-500{% endif %}" placeholder="أكد كلمة المرور">
+                    </div>
+                    {% if form.password2.errors %}
+                    <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        {{ form.password2.errors.0 }}
+                    </p>
+                    {% else %}
+                    <p class="mt-2 text-xs text-gray-500">{{ form.password2.help_text }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- نوع الحساب -->
+            <div class="relative transform hover:-translate-y-1 transition-all duration-300">
+                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    نوع الحساب
+                </label>
+                <div class="flex space-x-4 rtl:space-x-reverse">
+                    {% for radio in form.role %}
+                    <div class="flex items-center bg-gray-50 p-3 rounded-md border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-colors duration-300 transform hover:scale-105">
+                        {{ radio.tag }}
+                        <label for="{{ radio.id_for_label }}" class="mr-2 text-sm text-gray-700 cursor-pointer">{{ radio.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.role.errors %}
+                <p class="mt-2 text-sm text-red-600 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    {{ form.role.errors.0 }}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- كود المعلم -->
+            <div id="instructor_code_field" class="hidden relative transform hover:-translate-y-1 transition-all duration-300">
+                <label for="{{ form.instructor_code.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    كود المعلم
+                </label>
+                <div class="relative">
+                    <!-- تمت إزالة الأيقونة من هنا -->
+                    <input type="password" name="{{ form.instructor_code.name }}" id="{{ form.instructor_code.id_for_label }}" class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.instructor_code.errors %}border-red-500{% endif %}" placeholder="أدخل كود المعلم" value="{{ form.instructor_code.value|default:'' }}">
+                </div>
+                {% if form.instructor_code.errors %}
+                <p class="mt-2 text-sm text-red-600 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    {{ form.instructor_code.errors.0 }}
+                </p>
+                {% else %}
+                <p class="mt-2 text-xs text-gray-500">{{ form.instructor_code.help_text }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="pt-4">
+                <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    إنشاء حساب
+                </button>
+            </div>
+            
+            <div class="text-center text-sm text-gray-600 mt-4 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                لديك حساب بالفعل؟ 
+                <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-800 mr-1 hover:underline transition-colors duration-300">تسجيل الدخول</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* تأثيرات إضافية للصفحة */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    /* تحسينات للنموذج */
+    input:focus, select:focus {
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    
+    /* تأثير عند التحويم على الأزرار */
+    button:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // الحصول على عناصر الراديو
+        const roleRadios = document.querySelectorAll('input[name="role"]');
+        const instructorCodeField = document.getElementById('instructor_code_field');
+        
+        // وظيفة لإظهار/إخفاء حقل كود المعلم مع تأثير انتقالي
+        function toggleInstructorCodeField() {
+            const selectedRole = document.querySelector('input[name="role"]:checked').value;
+            if (selectedRole === 'instructor') {
+                instructorCodeField.classList.remove('hidden');
+                setTimeout(() => {
+                    instructorCodeField.style.opacity = '1';
+                    instructorCodeField.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                instructorCodeField.style.opacity = '0';
+                instructorCodeField.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    instructorCodeField.classList.add('hidden');
+                }, 300);
+            }
+        }
+        
+        // تطبيق الوظيفة عند تحميل الصفحة
+        toggleInstructorCodeField();
+        
+        // إضافة مستمع حدث لكل زر راديو
+        roleRadios.forEach(radio => {
+            radio.addEventListener('change', toggleInstructorCodeField);
+        });
+        
+        // إضافة تأثيرات للحقول عند التركيز
+        const formInputs = document.querySelectorAll('input');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-indigo-200', 'ring-opacity-50');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-indigo-200', 'ring-opacity-50');
+            });
+        });
+        
+        // تأثير ظهور تدريجي للعناصر
+        const formElements = document.querySelectorAll('form > div');
+        formElements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                element.style.transition = 'all 0.5s ease';
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, 100 * (index + 1));
+        });
+    });
+</script>
+{% endblock %}

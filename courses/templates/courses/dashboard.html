@@ -1,0 +1,919 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}لوحة التحكم | LearnHub{% endblock %}
+
+{% block extra_css %}
+<style>
+/* تأثيرات الحركة والانتقال */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* تطبيق التأثيرات */
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+  opacity: 0;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.8s ease forwards;
+  opacity: 0;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.8s ease forwards;
+  opacity: 0;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.shimmer {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* تأخير الحركة */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+.delay-500 {
+  animation-delay: 0.5s;
+}
+
+/* تأثيرات التحويم */
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+}
+
+/* تأثيرات أزرار */
+.btn-pulse:hover {
+  animation: pulse 1.5s infinite;
+}
+
+/* تأثيرات شريط التقدم */
+.progress-bar-animate .progress-fill {
+  transition: width 1.5s ease-in-out;
+}
+
+/* تأثير تغيير الألوان */
+.gradient-bg {
+  background: linear-gradient(135deg, #4f46e5, #818cf8);
+  background-size: 200% 200%;
+  animation: gradientBG 5s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* تأثير الظل المتحرك */
+.shadow-animate {
+  position: relative;
+}
+
+.shadow-animate::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+  animation: pulse 2s infinite;
+  z-index: -1;
+}
+
+/* تأثير الصورة */
+.image-zoom {
+  overflow: hidden;
+}
+
+.image-zoom img {
+  transition: transform 0.5s ease;
+}
+
+.image-zoom:hover img {
+  transform: scale(1.1);
+}
+
+/* تحسينات الأزرار */
+.btn-fancy {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  z-index: 1;
+  text-decoration: none; /* إزالة الخط من تحت النص */
+}
+
+.btn-fancy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.btn-fancy:hover::before {
+  width: 100%;
+  right: auto;
+  left: 0;
+}
+
+.btn-primary {
+  background-color: #4f46e5;
+  color: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary:hover {
+  background-color: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #4f46e5;
+  border: 1px solid #4f46e5;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(79, 70, 229, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.btn-danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon svg {
+  margin-left: 0.5rem;
+}
+
+/* تأثير الزر المتموج */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform .5s, opacity 1s;
+}
+
+.btn-ripple:active::after {
+  transform: scale(0, 0);
+  opacity: .3;
+  transition: 0s;
+}
+
+/* تأثير الزر المتوهج */
+.btn-glow {
+  position: relative;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  background-size: 400%;
+  border-radius: 0.5rem;
+  z-index: -1;
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* تأثير الزر المتحرك */
+.btn-float {
+  transition: transform 0.3s ease;
+}
+
+.btn-float:hover {
+  transform: translateY(-5px);
+}
+
+/* تأثير الزر المتغير */
+.btn-morph {
+  transition: border-radius 0.3s ease, transform 0.3s ease;
+}
+
+.btn-morph:hover {
+  border-radius: 1.5rem;
+  transform: scale(1.05);
+}
+
+/* تأثير الزر المتوسع */
+.btn-expand {
+  transition: padding 0.3s ease;
+}
+
+.btn-expand:hover {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* تأثير الزر المتحول */
+.btn-shift {
+  transition: background-position 0.3s ease;
+  background: linear-gradient(to right, #4f46e5 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+}
+
+.btn-shift:hover {
+  background-position: left bottom;
+  color: white;
+}
+
+/* تأثير الزر المتدرج */
+.btn-gradient {
+  background: linear-gradient(45deg, #4f46e5, #818cf8);
+  background-size: 200% 200%;
+  animation: gradientBG 5s ease infinite;
+  color: white;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  text-decoration: none; /* إزالة الخط من تحت النص */
+}
+
+.view-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  color: white; /* جعل لون النص أبيض عند التحويم */
+}
+
+.edit-btn {
+  background-color: #f3f4f6;
+  color: #4f46e5;
+  border: 1px solid #e5e7eb;
+}
+
+.edit-btn:hover {
+  background-color: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+  background-color: #fee2e2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+}
+
+.delete-btn:hover {
+  background-color: #fecaca;
+  transform: translateY(-2px);
+}
+
+/* تعديلات لجعل الكروت متوسطة الحجم */
+.course-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.course-image {
+  height: 150px;
+}
+
+.course-content {
+  padding: 1rem 1.25rem;
+}
+
+.course-title {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-description {
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-meta {
+  font-size: 0.75rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8" dir="rtl">
+    <!-- نموذج مخفي يحتوي على رمز CSRF -->
+    <form id="csrf-form" style="display: none;">
+        {% csrf_token %}
+    </form>
+    
+    <h1 class="text-3xl font-bold mb-2 animate-fade-in">لوحة التحكم</h1>
+    <p class="text-gray-600 mb-6 animate-fade-in delay-100">
+        {% if user.profile.is_instructor %}
+        إدارة الدورات التعليمية والمحتوى
+        {% else %}
+        تتبع تقدمك التعليمي
+        {% endif %}
+    </p>
+    
+    {% if user.profile.is_instructor %}
+    <!-- قسم المعلم -->
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow-md hover-lift animate-fade-in delay-100">
+            <h3 class="text-sm font-medium text-gray-500 mb-1">الدورات التي أقوم بتدريسها</h3>
+            <div class="text-2xl font-bold animate-scale-up delay-200">{{ instructor_courses_count }}</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md hover-lift animate-fade-in delay-200">
+            <h3 class="text-sm font-medium text-gray-500 mb-1">إجمالي الطلاب</h3>
+            <div class="text-2xl font-bold animate-scale-up delay-300">{{ total_students }}</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md hover-lift animate-fade-in delay-300">
+            <h3 class="text-sm font-medium text-gray-500 mb-1">متوسط التقييم</h3>
+            <div class="text-2xl font-bold animate-scale-up delay-400">{{ average_rating|default:"0.0" }}</div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between items-center mb-4 animate-fade-in delay-200">
+        <h2 class="text-xl font-bold">دوراتي التعليمية</h2>
+        <a href="{% url 'create_course' %}" class="btn-fancy btn-primary btn-icon btn-ripple text-sm py-1.5 px-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            إضافة دورة جديدة
+        </a>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-5 mb-8">
+        {% for course in instructor_courses %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden course-card animate-fade-in" style="animation-delay: calc(0.1s * {{ forloop.counter }});">
+            <div class="course-image bg-gray-200 image-zoom">
+                {% if course.image %}
+                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-full object-cover">
+                {% endif %}
+            </div>
+            <div class="course-content">
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="course-title font-bold">{{ course.title }}</h3>
+                    <span class="text-xs bg-indigo-100 text-indigo-800 py-0.5 px-1.5 rounded-full">{{ course.enrollments.count }} طالب</span>
+                </div>
+                <p class="course-description text-gray-600">{{ course.description|truncatechars:100 }}</p>
+                
+                <!-- الأزرار المحسنة -->
+                <div class="action-buttons">
+                    <a href="{% url 'course_detail' course.id %}" class="action-btn view-btn btn-ripple flex-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        عرض الدورة
+                    </a>
+                    <a href="{% url 'edit_course' course.id %}" class="action-btn edit-btn btn-ripple">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        تعديل
+                    </a>
+                    <button type="button" 
+                            onclick="confirmDeleteCourse({{ course.id }}, '{{ course.title|escapejs }}')" 
+                            class="action-btn delete-btn btn-ripple">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        حذف
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-3 text-center py-6 bg-white rounded-lg shadow-md animate-fade-in">
+            <p class="text-gray-500 mb-4">لم تقم بإنشاء أي دورات تعليمية بعد.</p>
+            <a href="{% url 'create_course' %}" class="btn-fancy btn-primary btn-ripple text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                إنشاء دورة جديدة
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <!-- قسم الطالب -->
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow-md hover-lift animate-fade-in delay-100">
+            <h3 class="text-sm font-medium text-gray-500 mb-1">الدورات قيد التقدم</h3>
+            <div class="text-2xl font-bold animate-scale-up delay-200">{{ in_progress_count }}</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md hover-lift animate-fade-in delay-200">
+            <h3 class="text-sm font-medium text-gray-500 mb-1">الدورات المكتملة</h3>
+            <div class="text-2xl font-bold animate-scale-up delay-300">{{ completed_count }}</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md hover-lift animate-fade-in delay-300">
+            <h3 class="text-sm font-medium text-gray-500 mb-1">إجمالي وقت التعلم</h3>
+            <div class="text-xl font-bold flex items-center justify-center md:justify-start gap-1 rtl:flex-row-reverse animate-scale-up delay-400">
+                {% if total_hours > 0 or total_minutes > 0 %}
+                    {% if total_hours > 0 %}
+                        <span class="flex items-center">
+                            <span>{{ total_hours }}</span>
+                            <span class="text-sm text-gray-600 mx-1">
+                                {% if total_hours == 1 %}
+                                    ساعة
+                                {% elif total_hours == 2 %}
+                                    ساعتان
+                                {% elif total_hours <= 10 %}
+                                    ساعات
+                                {% else %}
+                                    ساعة
+                                {% endif %}
+                            </span>
+                        </span>
+                    {% endif %}
+                    
+                    {% if total_minutes > 0 %}
+                        <span class="flex items-center">
+                            <span>{{ total_minutes }}</span>
+                            <span class="text-sm text-gray-600 mx-1">
+                                {% if total_minutes == 1 %}
+                                    دقيقة
+                                {% elif total_minutes == 2 %}
+                                    دقيقتان
+                                {% elif total_minutes <= 10 %}
+                                    دقائق
+                                {% else %}
+                                    دقيقة
+                                {% endif %}
+                            </span>
+                        </span>
+                    {% endif %}
+                {% else %}
+                    <span>0</span>
+                    <span class="text-sm text-gray-600 mx-1">دقائق</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-8 animate-fade-in delay-300">
+        <div class="flex border-b border-gray-200">
+            <button class="py-2 px-4 border-b-2 {% if active_tab == 'in_progress' %}border-indigo-600 text-indigo-600{% else %}border-transparent text-gray-600 hover:text-gray-800{% endif %} hover-scale" 
+                    onclick="showTab('in_progress')">
+                قيد التقدم
+            </button>
+            <button class="py-2 px-4 border-b-2 {% if active_tab == 'completed' %}border-indigo-600 text-indigo-600{% else %}border-transparent text-gray-600 hover:text-gray-800{% endif %} hover-scale" 
+                    onclick="showTab('completed')">
+                مكتملة
+            </button>
+        </div>
+        
+        <div id="in_progress_tab" class="py-4 {% if active_tab != 'in_progress' %}hidden{% endif %}">
+            <div class="grid md:grid-cols-3 gap-5">
+                {% for enrollment in in_progress_enrollments %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden course-card animate-fade-in" style="animation-delay: calc(0.1s * {{ forloop.counter }});">
+                    <div class="course-image bg-gray-200 image-zoom">
+                        {% if enrollment.course.image %}
+                        <img src="{{ enrollment.course.image.url }}" alt="{{ enrollment.course.title }}" class="w-full h-full object-cover">
+                        {% endif %}
+                    </div>
+                    <div class="course-content">
+                        <h3 class="course-title font-bold">{{ enrollment.course.title }}</h3>
+                        <p class="course-meta text-gray-500 mb-2">آخر وصول {{ enrollment.last_accessed|timesince }} مضت</p>
+                        <div class="mb-3 progress-bar-animate">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs text-gray-600">التقدم</span>
+                                <span class="text-xs font-medium">{{ enrollment.progress }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full progress-fill" style="width: 0%;" data-progress="{{ enrollment.progress }}"></div>
+                            </div>
+                        </div>
+                        <a href="{% url 'course_detail' enrollment.course.id %}" class="btn-fancy btn-primary btn-ripple w-full text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            متابعة التعلم
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-3 text-center py-6 animate-fade-in">
+                    <p class="text-gray-500 mb-4">لم تقم بالتسجيل في أي دورات بعد.</p>
+                    <a href="{% url 'course_list' %}" class="btn-fancy btn-primary btn-ripple text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                        </svg>
+                        تصفح الدورات
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div id="completed_tab" class="py-4 {% if active_tab != 'completed' %}hidden{% endif %}">
+            <div class="grid md:grid-cols-3 gap-5">
+                {% for enrollment in completed_enrollments %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden course-card animate-fade-in" style="animation-delay: calc(0.1s * {{ forloop.counter }});">
+                    <div class="course-image bg-gray-200 image-zoom">
+                        {% if enrollment.course.image %}
+                        <img src="{{ enrollment.course.image.url }}" alt="{{ enrollment.course.title }}" class="w-full h-full object-cover">
+                        {% endif %}
+                    </div>
+                    <div class="course-content">
+                        <h3 class="course-title font-bold">{{ enrollment.course.title }}</h3>
+                        <p class="course-meta text-gray-500 mb-2">اكتملت في {{ enrollment.completed_date|date:"d M, Y" }}</p>
+                        <div class="mb-3 progress-bar-animate">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs text-gray-600">التقدم</span>
+                                <span class="text-xs font-medium">100%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-indigo-600 h-2 rounded-full progress-fill" style="width: 0%;" data-progress="100"></div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="{% url 'course_detail' enrollment.course.id %}" class="btn-fancy btn-secondary btn-ripple flex-1 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                مراجعة
+                            </a>
+                            <a href="{% url 'certificate' enrollment.id %}" class="btn-fancy btn-primary btn-ripple flex-1 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                الشهادة
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-3 text-center py-6 animate-fade-in">
+                    <p class="text-gray-500">لم تكمل أي دورات بعد.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // تأثيرات إضافية للصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        // تفعيل تأثير شريط التقدم
+        const progressBars = document.querySelectorAll('.progress-fill');
+        setTimeout(() => {
+            progressBars.forEach(bar => {
+                const progress = bar.getAttribute('data-progress');
+                bar.style.width = progress + '%';
+            });
+        }, 300);
+        
+        // تأثير تلميع للأزرار عند التحويم
+        const buttons = document.querySelectorAll('.btn-pulse');
+        buttons.forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.classList.add('animate-pulse');
+            });
+            button.addEventListener('mouseout', function() {
+                this.classList.remove('animate-pulse');
+            });
+        });
+        
+        // تأثير تكبير الصور عند التحويم
+        const imageContainers = document.querySelectorAll('.image-zoom');
+        imageContainers.forEach(container => {
+            container.addEventListener('mouseover', function() {
+                const image = this.querySelector('img');
+                if (image) {
+                    image.style.transform = 'scale(1.1)';
+                }
+            });
+            container.addEventListener('mouseout', function() {
+                const image = this.querySelector('img');
+                if (image) {
+                    image.style.transform = 'scale(1)';
+                }
+            });
+        });
+        
+        // تأثير الظهور التدريجي للعناصر
+        const fadeElements = document.querySelectorAll('.animate-fade-in');
+        fadeElements.forEach(element => {
+            // العناصر التي تحتوي على تأخير محدد بالفعل ستستخدم ذلك التأخير
+        });
+        
+        // تأثير تغيير التبويبات
+        window.showTab = function(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('[id$="_tab"]').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // إظهار التبويب المطلوب مع تأثير
+            const selectedTab = document.getElementById(tabName + '_tab');
+            if (selectedTab) {
+                selectedTab.classList.remove('hidden');
+                
+                // إضافة تأثير ظهور للعناصر داخل التبويب
+                const tabItems = selectedTab.querySelectorAll('.animate-fade-in');
+                tabItems.forEach((item, index) => {
+                    item.style.animationDelay = (0.1 * (index + 1)) + 's';
+                    item.style.opacity = '0';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                    }, 50);
+                });
+            }
+            
+            // تحديث الأزرار النشطة
+            document.querySelectorAll('.border-b-2').forEach(button => {
+                if (button.textContent.trim() === (tabName === 'in_progress' ? 'قيد التقدم' : 'مكتملة')) {
+                    button.classList.add('border-indigo-600', 'text-indigo-600');
+                    button.classList.remove('border-transparent', 'text-gray-600');
+                } else {
+                    button.classList.remove('border-indigo-600', 'text-indigo-600');
+                    button.classList.add('border-transparent', 'text-gray-600');
+                }
+            });
+        };
+        
+        // تأثير تأكيد الحذف
+        window.confirmDeleteCourse = function(courseId, courseTitle) {
+            if (confirm('هل أنت متأكد من رغبتك في حذف الدورة: ' + courseTitle + '؟')) {
+                // إنشاء نموذج مؤقت لإرسال طلب POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/courses/' + courseId + '/delete/';
+        
+                // الحصول على رمز CSRF من النموذج المخفي
+                const csrfToken = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]');
+        
+                if (csrfToken) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'csrfmiddlewaretoken';
+                    input.value = csrfToken.value;
+                    form.appendChild(input);
+        
+                    // إضافة النموذج إلى الصفحة وإرساله
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    // إذا لم يتم العثور على رمز CSRF، عرض رسالة خطأ
+                    alert('حدث خطأ: رمز CSRF غير موجود. يرجى تحديث الصفحة والمحاولة مرة أخرى.');
+                }
+            }
+        };
+        
+        // تأثير الموجة للأزرار
+        const rippleButtons = document.querySelectorAll('.btn-ripple');
+        rippleButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '1px';
+                ripple.style.height = '1px';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // تعريف تأثير الموجة
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(100);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}

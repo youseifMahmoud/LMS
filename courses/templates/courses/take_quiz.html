@@ -1,0 +1,199 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}{{ quiz.title }} | {{ course.title }}{% endblock %}
+
+{% block content %}
+<div dir="rtl" class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8 hover:shadow-lg transition-shadow duration-300 animate-fade-in">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h1 class="text-2xl font-bold flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    {{ quiz.title }}
+                </h1>
+                
+                <div id="timer" class="bg-indigo-100 text-indigo-800 py-2 px-4 rounded-full flex items-center font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="time-remaining">{{ quiz.time_limit }}:00</span>
+                </div>
+            </div>
+            
+            <div class="mb-6 bg-indigo-50 p-4 rounded-md">
+                <p class="text-gray-700">{{ quiz.description }}</p>
+                <div class="flex items-center mt-3 text-sm text-gray-600">
+                    <div class="flex items-center ml-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ quiz.questions.count }} أسئلة</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>درجة النجاح: {{ quiz.passing_score }}%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="quiz-form" method="post" action="{% url 'submit_quiz' course.id quiz.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="time_spent" id="time-spent" value="0">
+                
+                <div class="space-y-8">
+                    {% for question in quiz.questions.all %}
+                    <div class="question-item bg-gray-50 p-5 rounded-lg border border-gray-200">
+                        <h3 class="font-medium mb-4 flex items-start">
+                            <span class="bg-indigo-100 text-indigo-700 rounded-full w-6 h-6 inline-flex items-center justify-center ml-2 text-sm flex-shrink-0">{{ forloop.counter }}</span>
+                            <span>{{ question.text }}</span>
+                        </h3>
+                        
+                        <div class="mr-8">
+                            {% if question.question_type == 'multiple_choice' %}
+                                {% for option in question.options.all %}
+                                <div class="flex items-center mb-3">
+                                    <input type="radio" id="option_{{ question.id }}_{{ option.id }}" name="answer_{{ question.id }}" value="{{ option.id }}" class="ml-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" required>
+                                    <label for="option_{{ question.id }}_{{ option.id }}" class="text-gray-700">{{ option.text }}</label>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="flex items-center space-x-6 space-x-reverse">
+                                    <div class="flex items-center">
+                                        <input type="radio" id="true_{{ question.id }}" name="answer_{{ question.id }}" value="true" class="ml-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" required>
+                                        <label for="true_{{ question.id }}" class="text-gray-700">صحيح</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="radio" id="false_{{ question.id }}" name="answer_{{ question.id }}" value="false" class="ml-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" required>
+                                        <label for="false_{{ question.id }}" class="text-gray-700">خطأ</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="flex justify-center mt-8 pt-6 border-t border-gray-200">
+                    <button type="submit" class="bg-indigo-600 py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center transform hover:scale-105 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        إرسال الإجابات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* تأثيرات إضافية للصفحة */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+    
+    /* تأثير للأسئلة */
+    .question-item {
+        transition: all 0.3s ease;
+    }
+    
+    .question-item:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-color: #d1d5db;
+    }
+    
+    /* تأثير للمؤقت عندما يقترب من النهاية */
+    .timer-warning {
+        animation: pulse 1.5s infinite;
+        background-color: #fef2f2;
+        color: #b91c1c;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // مؤقت الاختبار
+        const timerElement = document.getElementById('timer');
+        const timeRemainingElement = document.getElementById('time-remaining');
+        const timeSpentInput = document.getElementById('time-spent');
+        const quizForm = document.getElementById('quiz-form');
+        
+        // تحويل وقت الاختبار إلى ثوانٍ
+        const quizTimeLimit = {{ quiz.time_limit }} * 60;
+        let timeRemaining = quizTimeLimit;
+        let timerId;
+        
+        // بدء المؤقت
+        startTimer();
+        
+        function startTimer() {
+            const startTime = Date.now();
+            
+            timerId = setInterval(function() {
+                // حساب الوقت المنقضي
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                timeRemaining = quizTimeLimit - elapsedTime;
+                
+                if (timeRemaining <= 0) {
+                    // انتهاء الوقت، إرسال النموذج تلقائيًا
+                    clearInterval(timerId);
+                    timeSpentInput.value = quizTimeLimit;
+                    quizForm.submit();
+                    return;
+                }
+                
+                // تحديث عرض الوقت المتبقي
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timeRemainingElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                // تحديث قيمة الوقت المستغرق في النموذج
+                timeSpentInput.value = elapsedTime;
+                
+                // إضافة تأثير تحذير عندما يقترب الوقت من النهاية
+                if (timeRemaining <= 60) {
+                    timerElement.classList.add('timer-warning');
+                }
+            }, 1000);
+        }
+        
+        // إيقاف المؤقت عند إرسال النموذج
+        quizForm.addEventListener('submit', function() {
+            clearInterval(timerId);
+        });
+        
+        // تأثير ظهور تدريجي للأسئلة
+        const questionItems = document.querySelectorAll('.question-item');
+        questionItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 100 * (index + 1));
+        });
+        
+        // تحذير عند محاولة مغادرة الصفحة
+        window.addEventListener('beforeunload', function(e) {
+            const confirmationMessage = 'هل أنت متأكد من مغادرة الصفحة؟ سيتم فقدان جميع إجاباتك.';
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
+        });
+    });
+</script>
+{% endblock %}
