@@ -1,0 +1,290 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}الملف الشخصي | منصة التعلم{% endblock %}
+
+{% block content %}
+<div dir="rtl" class="rtl container mx-auto px-4 py-12">
+    <div class="max-w-5xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="md:flex">
+                <div class="md:w-1/3 bg-indigo-50 p-6 flex flex-col items-center">
+                    <div class="w-32 h-32 rounded-full overflow-hidden mb-4 bg-gray-200 border-4 border-white shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="{{ user.get_full_name }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h1 class="text-2xl font-bold text-center">{{ user.get_full_name|default:user.username }}</h1>
+                    <p class="text-indigo-600 mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        {{ profile.get_role_display }}
+                    </p>
+                    
+                    <a href="{% url 'profile_edit' %}" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition text-center flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        تعديل الملف الشخصي
+                    </a>
+                </div>
+                
+                <div class="md:w-2/3 p-6 text-right">
+                    <div class="mb-6 transform hover:-translate-y-1 transition-transform duration-300">
+                        <h2 class="text-xl font-bold mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            نبذة عني
+                        </h2>
+                        <div class="bg-gray-50 p-4 rounded-lg border-r-4 border-indigo-500">
+                            <p class="text-gray-600">
+                                {% if profile.bio %}
+                                {{ profile.bio }}
+                                {% else %}
+                                لم يتم إضافة نبذة بعد.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6 transform hover:-translate-y-1 transition-transform duration-300">
+                        <h2 class="text-xl font-bold mb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            معلومات الاتصال
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    البريد الإلكتروني
+                                </p>
+                                <p class="font-medium">{{ user.email }}</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    تاريخ الانضمام
+                                </p>
+                                <p class="font-medium">{{ user.date_joined|date:"d M, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if profile.is_instructor %}
+                    <!-- قسم المعلم -->
+                    <div class="mb-6 transform hover:-translate-y-1 transition-transform duration-300">
+                        <h2 class="text-xl font-bold mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            الإحصائيات
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-indigo-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    الدورات
+                                </p>
+                                <p class="text-2xl font-bold">{{ courses_count }}</p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    الطلاب
+                                </p>
+                                <p class="text-2xl font-bold">{{ students_count }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="animate-fade-in">
+                        <h2 class="text-xl font-bold mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            الدورات التي أقوم بتدريسها
+                        </h2>
+                        <div class="space-y-4">
+                            {% for course in courses %}
+                            <div class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 hover:shadow-md transition-all transform hover:-translate-y-1">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-bold">{{ course.title }}</h3>
+                                    <span class="text-sm bg-indigo-100 text-indigo-800 py-1 px-3 rounded-full flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                        {{ course.enrollments.count }} طالب
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-2">{{ course.description|truncatechars:100 }}</p>
+                                <div class="mt-4 flex justify-between">
+                                    <a href="{% url 'course_detail' course.id %}" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        عرض الدورة
+                                    </a>
+                                    <a href="{% url 'edit_course' course.id %}" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        تعديل
+                                    </a>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center p-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                <p class="text-gray-500">لم تقم بإنشاء أي دورات بعد.</p>
+                                <a href="{% url 'create_course' %}" class="mt-4 inline-block bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">
+                                    إنشاء دورة جديدة
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- قسم الطالب -->
+                    <div class="mb-6 transform hover:-translate-y-1 transition-transform duration-300">
+                        <h2 class="text-xl font-bold mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            الإحصائيات
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-indigo-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    الدورات المسجلة
+                                </p>
+                                <p class="text-2xl font-bold">{{ enrolled_courses_count }}</p>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <p class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    الدورات المكتملة
+                                </p>
+                                <p class="text-2xl font-bold">{{ completed_courses_count }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="animate-fade-in">
+                        <h2 class="text-xl font-bold mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            الدورات المسجل فيها
+                        </h2>
+                        <div class="space-y-4">
+                            {% for enrollment in enrollments %}
+                            <div class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 hover:shadow-md transition-all transform hover:-translate-y-1">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-bold">{{ enrollment.course.title }}</h3>
+                                    <span class="text-sm {% if enrollment.completed %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %} py-1 px-3 rounded-full flex items-center">
+                                        {% if enrollment.completed %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        مكتملة
+                                        {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        قيد التقدم
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-2">{{ enrollment.course.description|truncatechars:100 }}</p>
+                                <div class="mt-4">
+                                    <a href="{% url 'course_detail' enrollment.course.id %}" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        عرض الدورة
+                                    </a>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center p-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                <p class="text-gray-500">لم تقم بالتسجيل في أي دورات بعد.</p>
+                                <a href="{% url 'course_list' %}" class="mt-4 inline-block bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">
+                                    استكشف الدورات
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // تأثيرات الظهور عند التمرير
+        const animatedElements = document.querySelectorAll('.animate-fade-in');
+        
+        // دالة للتحقق من ظهور العنصر في نطاق الرؤية
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.8
+            );
+        }
+        
+        // دالة لإضافة فئة التأثير للعناصر المرئية
+        function handleScroll() {
+            animatedElements.forEach(element => {
+                if (isElementInViewport(element)) {
+                    element.classList.add('opacity-100');
+                    element.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }
+        
+        // إضافة فئات التأثير الأولية
+        animatedElements.forEach(element => {
+            element.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700');
+        });
+        
+        // تشغيل الدالة عند التمرير وعند تحميل الصفحة
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // تشغيل مرة واحدة عند التحميل
+    });
+</script>
+{% endblock %}
+{% endblock %}
+

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}4Techno{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'courses/css/styles.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- إضافة Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+    {% block extra_css %}{% endblock %}
+    <style>
+        /* تنسيقات عامة للغة العربية */
+        body {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        /* تنسيقات شاشة التحميل */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        #page-loader.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .logo-animation {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+        }
+        
+        .loading-text {
+            color: #4f46e5;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        /* تأثيرات إضافية */
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s forwards;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* تعديلات للقائمة في الاتجاه من اليمين لليسار */
+        .rtl-space-x-8 > * + * {
+            margin-right: 2rem;
+            margin-left: 0;
+        }
+        
+        .rtl-space-y-2 > * + * {
+            margin-top: 0.5rem;
+            margin-right: 0;
+        }
+
+        /* تنسيقات أيقونة التنقل */
+        .navigation-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: rotate 2s infinite linear;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* تنسيقات الشعار الدائري - تم تكبير الحجم */
+        .circular-logo {
+            width: 70px; /* تم زيادة الحجم من 50px */
+            height: 70px; /* تم زيادة الحجم من 50px */
+            border-radius: 50%;
+            background-color: #4f46e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-left: 10px;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .circular-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.5);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* إزالة تنسيقات النص أسفل اللوجو */
+        .logo-text {
+            display: none;
+        }
+        
+        /* تأثيرات للروابط في الهيدر - تعديل لجعل النص بجانب الأيقونة */
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link svg {
+            margin-left: 0.5rem;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            right: 0;
+            background-color: #4f46e5;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* تنسيقات الفوتر */
+        .footer {
+            background-color: #1e293b;
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .footer-title {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background-color: #38bdf8;
+            bottom: -8px;
+            right: 0;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-link {
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-link a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-link a:hover {
+            color: white;
+            transform: translateX(-5px);
+        }
+        
+        .footer-link i {
+            margin-left: 0.5rem;
+            color: #38bdf8;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+        }
+        
+        .social-icon.facebook:hover {
+            background-color: #1877f2;
+            box-shadow: 0 5px 15px rgba(24, 119, 242, 0.4);
+        }
+        
+        .social-icon.whatsapp:hover {
+            background-color: #25d366;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        .social-icon.telegram:hover {
+            background-color: #0088cc;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+        }
+        
+        .social-icon.youtube:hover {
+            background-color: #ff0000;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-bottom p {
+            margin: 0;
+            color: #94a3b8;
+        }
+        
+        /* تأثير نبض للشعار */
+        @keyframes logoPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+            }
+        }
+        
+        .pulse-effect {
+            animation: logoPulse 2s infinite;
+        }
+
+        /* تعديل موضع الأيقونات في حقول الإدخال */
+        .relative .absolute.right-0 {
+            right: auto !important;
+            left: 1.5rem !important; /* تعديل المسافة من اليسار */
+        }
+
+        .relative .absolute.left-0 {
+            left: auto !important;
+            right: 1.5rem !important; /* تعديل المسافة من اليمين */
+        }
+
+        .relative .pr-10 {
+            padding-right: 0.75rem !important;
+            padding-left: 3rem !important; /* زيادة المسافة للنص */
+        }
+
+        .relative .pl-10 {
+            padding-left: 0.75rem !important;
+            padding-right: 3rem !important; /* زيادة المسافة للنص */
+        }
+
+        /* تعديل موضع الأيقونات في حقول الإدخال بشكل عام */
+        .input-icon-left {
+            position: absolute;
+            left: 1.5rem; /* تعديل المسافة من اليسار */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+
+        .input-icon-right {
+            position: absolute;
+            right: 1.5rem; /* تعديل المسافة من اليمين */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- شاشة التحميل -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="logo-container">
+                <div class="navigation-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </div>
+            </div>
+            <div class="loading-text">
+                جاري التنقل<span class="loading-dots"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <!-- تعديل جزء اللوجو لإزالة النص أسفله -->
+            <a href="{% url 'home' %}" class="flex items-center space-x-2 hover-scale">
+                <div class="logo-container flex flex-col items-center mr-2">
+                    <div class="circular-logo pulse-effect">
+                        <img src="{% static 'courses/images/logo444.jpg' %}" alt="4Techno Logo" class="rounded-full w-full h-full object-cover">
+                    </div>
+                </div>
+            </a>
+            <nav class="hidden md:flex rtl-space-x-8">
+                <a href="{% url 'home' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.1s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    الرئيسية
+                </a>
+                <a href="{% url 'course_list' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    الدورات
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.3s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        لوحة التحكم
+                    </a>
+                    <a href="{% url 'profile' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.4s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        الملف الشخصي
+                    </a>
+                    <a href="{% url 'logout' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.5s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        تسجيل الخروج
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.3s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        تسجيل الدخول
+                    </a>
+                    <a href="{% url 'register' %}" class="nav-link text-gray-600 hover:text-indigo-600 flex items-center slide-in" style="animation-delay: 0.4s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        إنشاء حساب
+                    </a>
+                {% endif %}
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 hover:text-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-2 rtl-space-y-2">
+                <a href="{% url 'home' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    الرئيسية
+                </a>
+                <a href="{% url 'course_list' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    الدورات
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        لوحة التحكم
+                    </a>
+                    <a href="{% url 'profile' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        الملف الشخصي
+                    </a>
+                    <a href="{% url 'logout' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        تسجيل الخروج
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        تسجيل الدخول
+                    </a>
+                    <a href="{% url 'register' %}" class="block text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md px-3 py-2 transition-all duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        إنشاء حساب
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-grow fade-in">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer - تم تحديثه بالكامل -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- القسم الأول: معلومات الموقع -->
+            <div class="text-center md:text-right">
+                <h3 class="footer-title">4Techno</h3>
+                <p class="text-gray-300">منصة تعليمية تهدف إلى تبسيط التعلم وتوفير محتوى تقني مميز باللغة العربية.</p>
+                <div class="circular-logo mx-auto md:mx-0 mt-4 mb-2" style="width: 60px; height: 60px;">
+                    <img src="{% static 'courses/images/logo444.jpg' %}" alt="4Techno Logo" class="rounded-full w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <!-- القسم الثاني: روابط سريعة -->
+            <div>
+                <h3 class="footer-title">روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li class="footer-link">
+                        <a href="{% url 'home' %}">
+                            <i class="fas fa-home"></i>
+                            الرئيسية
+                        </a>
+                    </li>
+                    <li class="footer-link">
+                        <a href="{% url 'course_list' %}">
+                            <i class="fas fa-book"></i>
+                            الدورات
+                        </a>
+                    </li>
+                    <li class="footer-link">
+                        <a href="#">
+                            <i class="fas fa-info-circle"></i>
+                            عن الموقع
+                        </a>
+                    </li>
+                    <li class="footer-link">
+                        <a href="#">
+                            <i class="fas fa-envelope"></i>
+                            تواصل معنا
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- القسم الثالث: تابعنا -->
+            <div>
+                <h3 class="footer-title">تابعنا</h3>
+                <p class="text-gray-300 mb-4">تابعنا على منصات التواصل الاجتماعي للحصول على آخر الأخبار والتحديثات</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/share/1G7fuZtwYs/" class="social-icon facebook" title="فيسبوك">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.whatsapp.com/channel/0029VbARqTvFCCoQXiqwtr3m" class="social-icon whatsapp" title="واتساب">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://t.me/+64jJ6iSs3c0wOTg0" class="social-icon telegram" title="تليجرام">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@4TechnoAl-Azhar" class="social-icon youtube" title="يوتيوب">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- القسم الرابع: اتصل بنا -->
+            <div>
+                <h3 class="footer-title">اتصل بنا</h3>
+                <ul class="footer-links">
+                    <li class="footer-link">
+                        <a href="mailto:edu@azhar.edu.eg">
+                            <i class="fas fa-envelope"></i>
+                            edu@azhar.edu.eg
+                        </a>
+                    </li>
+                    <li class="footer-link">
+                        <a href="tel:+966500000000">
+                            <i class="fas fa-phone-alt"></i>
+                            +02 24038957
+                        </a>
+                    </li>
+                    <li class="footer-link">
+                        <a href="#">
+                            <i class="fas fa-map-marker-alt"></i>
+                            شارع المخيم الدائم، جامعة الازهر
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- الجزء السفلي من الفوتر -->
+        <div class="footer-bottom">
+            <p>© {% now "Y" %} 4Techno. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'courses/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // شاشة التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageLoader = document.getElementById('page-loader');
+            const mainContent = document.querySelector('main');
+            const header = document.querySelector('header');
+            const footer = document.querySelector('footer');
+            
+            // وظيفة لإخفاء شاشة التحميل
+            function hideLoader() {
+                pageLoader.classList.remove('active');
+            }
+            
+            // وظيفة لإظهار شاشة التحميل
+            function showLoader() {
+                pageLoader.classList.add('active');
+            }
+            
+            // تأكد من أن المحتوى مرئي
+            if (mainContent) mainContent.style.display = 'block';
+            if (header) header.style.display = 'block';
+            if (footer) footer.style.display = 'block';
+            
+            // إظهار شاشة التحميل في البداية
+            showLoader();
+            
+            // إخفاء شاشة التحميل عند اكتمال تحميل الصفحة
+            window.addEventListener('load', function() {
+                setTimeout(hideLoader, 500);
+            });
+            
+            // إذا كانت الصفحة محملة بالفعل، قم بإخفاء شاشة التحميل
+            if (document.readyState === 'complete') {
+                hideLoader();
+            }
+            
+            // إظهار شاشة التحميل عند استخدام زر الرجوع أو التقدم في المتصفح
+            window.addEventListener('beforeunload', function() {
+                showLoader();
+            });
+            
+            // إظهار شاشة التحميل عند استخدام زر الرجوع في المتصفح
+            window.addEventListener('popstate', function() {
+                showLoader();
+                setTimeout(hideLoader, 500); // إخفاء بعد فترة قصيرة إذا لم يتم إعادة تحميل الصفحة
+            });
+            
+            // إظهار شاشة التحميل عند النقر على الروابط
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('a');
+                if (target && 
+                    target.href && 
+                    target.href.startsWith(window.location.origin) && 
+                    !target.hasAttribute('download') && 
+                    !target.getAttribute('target') && 
+                    !e.ctrlKey && 
+                    !e.metaKey) {
+                    
+                    // حفظ الرابط الذي تم النقر عليه
+                    const clickedLink = target.href;
+                    
+                    // إظهار شاشة التحميل
+                    showLoader();
+                    
+                    // تأخير قصير قبل الانتقال للسماح بظهور شاشة التحميل
+                    e.preventDefault();
+                    setTimeout(function() {
+                        window.location.href = clickedLink;
+                    }, 300);
+                }
+            });
+            
+            // إظهار شاشة التحميل عند إرسال النماذج
+            document.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (!form.hasAttribute('data-ajax')) {
+                    showLoader();
+                }
+            });
+            
+            // إضافة مستمع للأحداث للتعامل مع تحديثات التاريخ في المتصفح
+            window.addEventListener('pageshow', function(event) {
+                // إذا كانت الصفحة مستعادة من ذاكرة التخزين المؤقت للمتصفح
+                if (event.persisted) {
+                    hideLoader();
+                }
+            });
+            
+            // تفعيل تأثيرات الظهور عند التمرير
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.fade-in');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (elementPosition < windowHeight * 0.9) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // تشغيل مرة واحدة عند التحميل
+            
+            // تأثيرات إضافية للروابط في الهيدر
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.classList.add('animate__animated', 'animate__pulse');
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.classList.remove('animate__animated', 'animate__pulse');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

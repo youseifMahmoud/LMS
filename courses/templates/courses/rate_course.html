@@ -1,0 +1,85 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}تقييم الدورة - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">تقييم الدورة: {{ course.title }}</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <form method="post" action="{% url 'rate_course' course.id %}">
+                {% csrf_token %}
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-4">كيف تقيم هذه الدورة؟</label>
+                    <div class="flex space-x-8 rtl:space-x-reverse justify-center">
+                        {% for i in "12345" %}
+                        <label class="flex flex-col items-center cursor-pointer">
+                            <input type="radio" name="rating" value="{{ forloop.counter }}" class="hidden" {% if user_rating and user_rating.rating == forloop.counter %}checked{% endif %}>
+                            <div class="star-container h-12 w-12 flex items-center justify-center rounded-full hover:bg-gray-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 {% if user_rating and user_rating.rating >= forloop.counter %}text-yellow-500{% else %}text-gray-300{% endif %} star-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                            <span class="text-sm mt-1">{{ forloop.counter }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="comment" class="block text-gray-700 text-sm font-bold mb-2">ما رأيك في هذه الدورة؟ (اختياري)</label>
+                    <textarea id="comment" name="comment" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="شارك تجربتك مع هذه الدورة...">{{ user_rating.comment|default:'' }}</textarea>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-indigo-600 text-white py-2 px-6 rounded-md hover:bg-indigo-700 transition">حفظ التقييم</button>
+                    <a href="{% url 'course_detail' course.id %}" class="text-indigo-600 hover:text-indigo-800">العودة إلى الدورة</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const starContainers = document.querySelectorAll('.star-container');
+        const starIcons = document.querySelectorAll('.star-icon');
+        const ratingInputs = document.querySelectorAll('input[name="rating"]');
+        
+        // تحديث النجوم عند تحديد تقييم
+        function updateStars(selectedRating) {
+            starIcons.forEach((star, index) => {
+                if (index < selectedRating) {
+                    star.classList.add('text-yellow-500');
+                    star.classList.remove('text-gray-300');
+                } else {
+                    star.classList.remove('text-yellow-500');
+                    star.classList.add('text-gray-300');
+                }
+            });
+        }
+        
+        // إضافة مستمعي الأحداث للنجوم
+        starContainers.forEach((container, index) => {
+            container.addEventListener('click', function() {
+                const rating = index + 1;
+                ratingInputs[index].checked = true;
+                updateStars(rating);
+            });
+            
+            container.addEventListener('mouseenter', function() {
+                updateStars(index + 1);
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                // استعادة التقييم المحدد
+                const selectedRating = Array.from(ratingInputs).findIndex(input => input.checked) + 1;
+                updateStars(selectedRating || 0);
+            });
+        });
+    });
+</script>
+{% endblock %}
