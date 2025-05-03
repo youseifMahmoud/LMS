@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# LMS
-=======
+
 # 🎓 منصة تعليمية إلكترونية باستخدام Django
 
 ![Django](https://img.shields.io/badge/Django-4.x-green?logo=django)
