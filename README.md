@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# LMS2
-=======
+
 # 🎓 منصة تعليمية إلكترونية باستخدام Django
 
 ![Django](https://img.shields.io/badge/Django-4.x-green?logo=django)
@@ -133,4 +131,3 @@ gunicorn>=20.1.0
 
 ---
 
->>>>>>> 1a79aa1 (First commit)
