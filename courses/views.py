@@ -6,6 +6,9 @@ from django.utils import timezone
 from .models import Course, Lesson, Enrollment, LessonProgress, UserProfile , Rating, LessonAttachment
 import json
 import os
+import re
+from django.conf import settings
+import requests
 from django.http import JsonResponse
 from .forms import CourseForm, LessonForm, ProfileEditForm, LessonAttachmentForm
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -521,7 +524,6 @@ def edit_course(request, pk):
         'course': course
     })
 
-import re
 @login_required
 @user_passes_test(is_instructor)
 def create_quiz(request, course_id):
@@ -1040,6 +1042,21 @@ def create_lesson(request, course_id):
             # حفظ الدرس
             lesson = form.save(commit=False)
             lesson.course = course
+            
+            # معالجة نوع الفيديو
+            video_type = form.cleaned_data.get('video_type')
+            if video_type == 'youtube':
+                # إذا كان نوع الفيديو يوتيوب، نحذف أي ملف فيديو موجود
+                lesson.video = None
+                lesson.video_type = 'youtube'
+            else:
+                # إذا كان نوع الفيديو ملف، نحذف أي رابط يوتيوب موجود
+                lesson.video_url = None
+                lesson.video_type = 'file'
+            
+            # حفظ المدة بالثواني
+            lesson.duration_seconds = form.cleaned_data.get('duration_seconds', 0)
+            
             lesson.save()
             
             # معالجة الملفات المرفقة
@@ -1058,7 +1075,7 @@ def create_lesson(request, course_id):
             messages.success(request, 'تم إضافة الدرس بنجاح.')
             return redirect('edit_course', pk=course.id)
     else:
-        form = LessonForm(initial={'order': next_order, 'duration': 0})
+        form = LessonForm(initial={'order': next_order, 'duration': 0, 'duration_seconds': 0})
     
     return render(request, 'courses/create_lesson.html', {
         'form': form,
@@ -1089,6 +1106,23 @@ def edit_lesson(request, course_id, lesson_id):
                     lesson.video.delete()
                     lesson.video = None
                     lesson.duration = 0
+                    lesson.duration_seconds = 0
+            
+            # معالجة نوع الفيديو
+            video_type = form.cleaned_data.get('video_type')
+            if video_type == 'youtube':
+                # إذا تم تغيير النوع من ملف إلى يوتيوب، نحذف ملف الفيديو
+                if lesson.video:
+                    lesson.video.delete()
+                lesson.video = None
+                lesson.video_type = 'youtube'
+            else:
+                # إذا تم تغيير النوع من يوتيوب إلى ملف، نحذف رابط اليوتيوب
+                lesson.video_url = None
+                lesson.video_type = 'file'
+            
+            # حفظ المدة بالثواني
+            lesson.duration_seconds = form.cleaned_data.get('duration_seconds', 0)
             
             # Save lesson changes
             lesson = form.save()
@@ -1130,17 +1164,102 @@ def edit_lesson(request, course_id, lesson_id):
     # Get attachments associated with the lesson
     attachments = LessonAttachment.objects.filter(lesson=lesson)
     
-    # Debug information
-    print(f"Found {attachments.count()} attachments for lesson {lesson.id}")
-    for attachment in attachments:
-        print(f"Attachment ID: {attachment.id}, Filename: {attachment.filename}, Type: {attachment.file_type}")
-    
     return render(request, 'courses/edit_lesson.html', {
         'form': form,
         'course': course,
         'lesson': lesson,
         'attachments': attachments
     })
+
+def get_youtube_video_info(request):
+    """
+    دالة API لجلب معلومات فيديو يوتيوب
+    تستخدم في صفحات إنشاء وتعديل الدروس
+    """
+    video_id = request.GET.get('video_id')
+    if not video_id:
+        return JsonResponse({'error': 'معرف الفيديو مطلوب'}, status=400)
+    
+    try:
+        # استخدام oEmbed API من يوتيوب (لا يتطلب مفتاح API)
+        oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+        oembed_response = requests.get(oembed_url, timeout=5)  # إضافة timeout لتجنب الانتظار الطويل
+        
+        # التحقق من نجاح الاستجابة
+        if oembed_response.status_code != 200:
+            return JsonResponse({
+                'title': 'فيديو يوتيوب',
+                'duration_minutes': 0,
+                'duration_seconds': 0,
+                'thumbnail': f"https://img.youtube.com/vi/{video_id}/mqdefault.jpg"
+            })
+            
+        oembed_data = oembed_response.json()
+        
+        # الحصول على عنوان الفيديو
+        title = oembed_data.get('title', 'فيديو يوتيوب')
+        
+        # محاولة الحصول على مدة الفيديو (هذا يتطلب YouTube Data API)
+        # إذا لم يكن لديك مفتاح API، سنعيد مدة افتراضية
+        duration_minutes = 0
+        duration_seconds = 0
+        
+        # إذا كان لديك مفتاح YouTube API، يمكنك استخدام الكود التالي
+        api_key = getattr(settings, 'YOUTUBE_API_KEY', None)
+        if api_key:
+            try:
+                api_url = f"https://www.googleapis.com/youtube/v3/videos?id={video_id}&part=contentDetails&key={api_key}"
+                api_response = requests.get(api_url, timeout=5)
+                
+                if api_response.status_code == 200:
+                    api_data = api_response.json()
+                    
+                    if 'items' in api_data and len(api_data['items']) > 0:
+                        # استخراج المدة بتنسيق ISO 8601 (مثل PT1H30M15S)
+                        duration_iso = api_data['items'][0]['contentDetails']['duration']
+                        
+                        # تحويل تنسيق ISO 8601 إلى دقائق وثواني
+                        hours = 0
+                        minutes = 0
+                        seconds = 0
+                        
+                        # استخراج الساعات
+                        hour_match = re.search(r'(\d+)H', duration_iso)
+                        if hour_match:
+                            hours = int(hour_match.group(1))
+                        
+                        # استخراج الدقائق
+                        minute_match = re.search(r'(\d+)M', duration_iso)
+                        if minute_match:
+                            minutes = int(minute_match.group(1))
+                        
+                        # استخراج الثواني
+                        second_match = re.search(r'(\d+)S', duration_iso)
+                        if second_match:
+                            seconds = int(second_match.group(1))
+                        
+                        # تحويل الكل إلى دقائق وثواني
+                        duration_minutes = hours * 60 + minutes
+                        duration_seconds = seconds
+            except Exception as api_error:
+                # لا نريد أن نفشل الطلب بالكامل إذا فشل جلب المدة
+                print(f"خطأ في جلب مدة الفيديو: {api_error}")
+        
+        return JsonResponse({
+            'title': title,
+            'duration_minutes': duration_minutes,
+            'duration_seconds': duration_seconds,
+            'thumbnail': f"https://img.youtube.com/vi/{video_id}/mqdefault.jpg"
+        })
+    
+    except Exception as e:
+        # في حالة حدوث أ�� خطأ، نعيد معلومات افتراضية بدلاً من رمز خطأ
+        return JsonResponse({
+            'title': 'فيديو يوتيوب',
+            'duration_minutes': 0,
+            'duration_seconds': 0,
+            'thumbnail': f"https://img.youtube.com/vi/{video_id}/mqdefault.jpg"
+        })
 
 @login_required
 @user_passes_test(is_instructor)

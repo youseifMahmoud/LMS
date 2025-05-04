@@ -79,9 +79,21 @@ class LessonForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
     
+    video_type = forms.ChoiceField(
+        choices=[('file', 'ملف فيديو'), ('youtube', 'رابط يوتيوب')],
+        initial='file',
+        widget=forms.RadioSelect(attrs={'class': 'video-type-radio'})
+    )
+    
+    video_url = forms.URLField(
+        required=False,
+        widget=forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://www.youtube.com/watch?v=...'}),
+        help_text="أدخل رابط فيديو يوتيوب"
+    )
+    
     class Meta:
         model = Lesson
-        fields = ['title', 'content', 'video', 'duration', 'order']
+        fields = ['title', 'content', 'video', 'video_url', 'video_type', 'duration', 'order']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'duration': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
@@ -95,13 +107,44 @@ class LessonForm(forms.ModelForm):
             total_seconds = self.instance.duration * 60
             self.initial['duration_seconds'] = total_seconds % 60
             self.initial['duration'] = total_seconds // 60
+            
+            # تعيين نوع الفيديو بناءً على البيانات الموجودة
+            if self.instance.video_url:
+                self.initial['video_type'] = 'youtube'
+            else:
+                self.initial['video_type'] = 'file'
 
     def clean(self):
         cleaned_data = super().clean()
+        video_type = cleaned_data.get('video_type')
+        video = cleaned_data.get('video')
+        video_url = cleaned_data.get('video_url')
         duration = cleaned_data.get('duration') or 0
         duration_seconds = cleaned_data.get('duration_seconds') or 0
+        
+        # التحقق من وجود فيديو أو رابط يوتيوب حسب النوع المحدد
+        if video_type == 'file' and not (video or self.instance and self.instance.video):
+            if not self.files.get('video'):
+                self.add_error('video', 'يرجى تحميل ملف فيديو')
+        elif video_type == 'youtube' and not video_url:
+            self.add_error('video_url', 'يرجى إدخال رابط فيديو يوتيوب')
+        
+        # التحقق من صحة رابط يوتيوب
+        if video_type == 'youtube' and video_url:
+            import re
+            youtube_regex = (
+                r'(https?://)?(www\.)?'
+                r'(youtube|youtu|youtube-nocookie)\.(com|be)/'
+                r'(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
+            
+            match = re.match(youtube_regex, video_url)
+            if not match:
+                self.add_error('video_url', 'رابط يوتيوب غير صالح')
+        
+        # حساب المدة الإجمالية بالثواني
         total_seconds = (duration * 60) + duration_seconds
         cleaned_data['duration'] = total_seconds // 60
+        
         return cleaned_data
 
 

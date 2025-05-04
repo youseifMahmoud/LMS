@@ -73,6 +73,8 @@ class Lesson(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     video = models.FileField(upload_to='lesson_videos/', blank=True, null=True)
+    video_url = models.URLField(blank=True, null=True, help_text="رابط فيديو يوتيوب")
+    video_type = models.CharField(max_length=10, choices=[('file', 'ملف'), ('youtube', 'يوتيوب')], default='file')
     duration = models.PositiveIntegerField(default=0, help_text="مدة الدرس بالدقائق")
     order = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -83,6 +85,22 @@ class Lesson(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def get_youtube_video_id(self):
+        """استخراج معرف فيديو يوتيوب من الرابط"""
+        if not self.video_url:
+            return None
+            
+        import re
+        youtube_regex = (
+            r'(https?://)?(www\.)?'
+            r'(youtube|youtu|youtube-nocookie)\.(com|be)/'
+            r'(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
+        
+        match = re.match(youtube_regex, self.video_url)
+        if match:
+            return match.group(6)
+        return None
 
 class LessonAttachment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='attachments')
