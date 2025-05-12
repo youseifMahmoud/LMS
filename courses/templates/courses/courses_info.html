@@ -127,6 +127,8 @@
         transition: all 0.3s ease;
         position: relative;
         border: 1px solid #f3f4f6;
+        display: flex;
+        flex-direction: column;
     }
 
     .course-card:hover {
@@ -162,6 +164,7 @@
         padding: 1.5rem;
         display: flex;
         justify-content: space-between;
+        margin-top: auto;
     }
 
     .info-item {
@@ -182,6 +185,7 @@
         border-radius: 20px;
         font-size: 0.75rem;
         font-weight: 600;
+        z-index: 10;
     }
 
     .semester-1 {
@@ -374,7 +378,7 @@
 
     <!-- شبكة المواد الدراسية -->
     <div class="courses-grid fade-in delay-4">
-        <!-- السنة الأولى -->
+        <!-- السنة الأولى - الترم الأول -->
         <div class="course-card" data-year="1">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
@@ -460,7 +464,7 @@
             </div>
         </div>
 
-        <!-- الترم الثاني -->
+        <!-- السنة الأولى - الترم الثاني -->
         <div class="course-card" data-year="1">
             <div class="semester-badge semester-2">الترم الثاني</div>
             <div class="course-header">
@@ -481,7 +485,7 @@
         <div class="course-card" data-year="1">
             <div class="semester-badge semester-2">الترم الثاني</div>
             <div class="course-header">
-                <h3 class="course-title">مصادر المعرفة <br>في المؤسسات التعليمية</h3>
+                <h3 class="course-title">مصادر المعرفة <br> في المؤسسات التعليمية</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
@@ -529,7 +533,7 @@
             </div>
         </div>
 
-        <!-- السنة الثانية -->
+        <!-- السنة الثانية - الترم الأول -->
         <div class="course-card" data-year="2">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
@@ -564,11 +568,131 @@
             </div>
         </div>
 
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">اقتصاديات المعلومات والمعرفة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">العمليات الفنية <br> في المؤسسات التعليمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الثانية - الترم الثاني -->
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">مقدمة في البرمجة التعليمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">الثقافة الرقمية والتحول الرقمي</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">المكتبات النوعية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">نظم المعلومات</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">أساسيات التعليم الإلكتروني</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
         <!-- السنة الثالثة - حاسب آلي -->
         <div class="course-card" data-year="3" data-spec="tech">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
-                <h3 class="course-title">الحاسب الآلي وتكنولوجيا التعليم</h3>
+                <h3 class="course-title">الحاسب الآلي وتكنولوجيا التعليم 1</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
@@ -599,6 +723,108 @@
             </div>
         </div>
 
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">البرمجة التعليمية تطبيقات مكتبية 1</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">الذكاء الاصطناعي والنظم الخبيرة في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">الحاسب الآلي وتكنولوجيا التعليم 2</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">نظم إدارة التعليم الإلكتروني</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">قواعد البيانات ونظم إدارتها</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">البرمجة التعليمية تطبيقات الويب 1</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
         <!-- السنة الثالثة - مكتبات -->
         <div class="course-card" data-year="3" data-spec="lib">
             <div class="semester-badge semester-1">الترم الأول</div>
@@ -620,7 +846,109 @@
         <div class="course-card" data-year="3" data-spec="lib">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
-                <h3 class="course-title">الفهرسة الآلية المقروءة</h3>
+                <h3 class="course-title">الفهرسة الآلية المقروءة 1</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">النظم الآلية في المكتبات ومراكز المعلومات</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">مدخل إلى علم الوثائق</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">نظم وعمليات الأرشفة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">التحليل الموضوعي والتكشيف <br> الرقمي</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">الفهرسة المقروءة آليا 2</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">مصادر المعلومات الرقمية</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
@@ -669,6 +997,108 @@
             </div>
         </div>
 
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">أساسيات التصوير الرقمي</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">الذكاء الاصطناعي والنظم الخبيرة في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">تقنية الرسوم الرقمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">البرامج الإذاعية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">تصميم وإنتاج البرامج الفيديو <br> الرقمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">قواعد البيانات ونظم إدارتها</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
         <!-- السنة الرابعة - حاسب آلي -->
         <div class="course-card" data-year="4" data-spec="tech">
             <div class="semester-badge semester-1">الترم الأول</div>
@@ -690,7 +1120,75 @@
         <div class="course-card" data-year="4" data-spec="tech">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
-                <h3 class="course-title">تطبيقات مكتبية 2</h3>
+                <h3 class="course-title">البرمجة التطبيقية تطبيقات <br> مكتبية 2</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">برمجة تعليمية استخدام وتوظيف</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">حاسب آلي للفئات الخاصة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">التقويم الإلكتروني في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">البرمجة التعليمية تطبيقات الويب 2</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
@@ -704,11 +1202,45 @@
             </div>
         </div>
 
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">البيئات التعليمية الرقمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">مشروع في التخصص</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
         <!-- السنة الرابعة - مكتبات -->
         <div class="course-card" data-year="4" data-spec="lib">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
-                <h3 class="course-title">مركز مصادر التعلم</h3>
+                <h3 class="course-title">مركز مصادر التعلم التجهيزات <br> والخدمات</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
@@ -739,11 +1271,113 @@
             </div>
         </div>
 
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">تكنولوجيا النشر الإلكتروني</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">المكتبات الرقمية وقواعد البيانات <br> العالمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">إدارة المكتبات ومراكز المعلومات</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">خدمات مرجعية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">تكنولوجيا المكتبات للفئات الخاصة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">مشروع التخصص</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
         <!-- السنة الرابعة - تكنولوجيا المعلومات -->
         <div class="course-card" data-year="4" data-spec="it">
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
-                <h3 class="course-title">تصميم وتطوير بيئات التعلم الإلكترونية</h3>
+                <h3 class="course-title">تصميم وتطوير بيئات التعليم <br> الإلكترونية</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
@@ -761,6 +1395,108 @@
             <div class="semester-badge semester-1">الترم الأول</div>
             <div class="course-header">
                 <h3 class="course-title">التعليم الإلكتروني</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">البرمجيات التعليمية تصميم وإنتاج</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">إنتاج الصور الرقمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">التقويم الإلكتروني في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">شبكات الحاسب الآلي في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">تكنولوجيا التعليم للفئات الخاصة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">مشروع التخصص</h3>
             </div>
             <div class="course-info">
                 <div class="info-item">
