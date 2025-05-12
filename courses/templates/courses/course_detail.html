@@ -296,7 +296,7 @@
                 {% else %}
                 <div class="bg-gray-50 p-6 rounded-lg text-center shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921   stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921   stroke-linejoin="round" stroke-width="2" d="M11 d="M11.049 2.927c.3-.921 1.603-.921 stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                     </svg>
                     <p class="text-gray-500">لا توجد تقييمات لهذه الدورة حتى الآن.</p>
                     {% if is_enrolled %}
@@ -469,7 +469,7 @@
                             </form>
                         {% endif %}
                     {% else %}
-                        <a href="{% url 'login' %}?next={% url 'course_detail' course.id %}" class="block text-center bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4 transform hover:scale-105 hover:shadow-lg flex items-center justify-center">
+                        <a href="{% url 'login' %}?next={% if course.lessons.exists %}{% url 'lesson_detail' course.id course.lessons.first.id %}{% else %}{% url 'course_detail' course.id %}{% endif %}" class="block text-center bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition mb-4 transform hover:scale-105 hover:shadow-lg flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                             </svg>

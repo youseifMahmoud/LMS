@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </label>
-                <div class="flex justify-center space-x-16 rtl:space-x-reverse">
+                <div class="flex justify-center gap-32">
                     {% for radio in form.role %}
                     <div class="flex items-center bg-gray-50 p-2 rounded-md border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-colors duration-300 transform hover:scale-105 min-w-[100px] justify-center">
                         {{ radio.tag }}
@@ -89,8 +89,15 @@
                 </label>
                 <div class="relative">
                     <div class="absolute right-0 inset-y-0 flex items-center pr-3 pointer-events-none text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 6 0 1121 9z" />
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 pointer-events-none"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                         </svg>
                     </div>
                     <input type="password" name="{{ form.instructor_code.name }}" id="{{ form.instructor_code.id_for_label }}" class="pr-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-300 {% if form.instructor_code.errors %}border-red-500{% endif %}" placeholder="أدخل كود المعلم" value="{{ form.instructor_code.value|default:'' }}">

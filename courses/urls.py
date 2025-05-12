@@ -29,4 +29,6 @@ urlpatterns = [
     path('courses/<int:course_id>/quizzes/<int:quiz_id>/results/<int:attempt_id>/', views.quiz_results, name='quiz_results'),
     path('courses/<int:course_id>/quizzes/<int:quiz_id>/edit/', views.edit_quiz, name='edit_quiz'),
     path('api/youtube_info/', views.get_youtube_video_info, name='youtube_info'),
+    path('about/', views.about, name='about'),
+    path('courses_info/', views.courses_info, name='courses_info'),
 ]

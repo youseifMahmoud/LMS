@@ -44,6 +44,12 @@ def home(request):
         'featured_courses': featured_courses
     })
 
+def about(request):
+    return render(request, 'courses/about.html')
+
+def courses_info(request):
+    return render(request, 'courses/courses_info.html')
+
 class CourseListView(ListView):
     model = Course
     template_name = 'courses/course_list.html'

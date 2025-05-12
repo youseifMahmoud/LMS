@@ -1,0 +1,913 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}المواد الدراسية - 4Techno{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* تنسيقات عامة */
+    .courses-section {
+        padding: 2rem 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        color: #4f46e5;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 50%;
+        transform: translateX(50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to left, #4f46e5, #818cf8);
+        border-radius: 2px;
+    }
+
+    /* تنسيقات البحث */
+    .search-container {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem 3rem 1rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: white;
+    }
+
+    .search-input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        outline: none;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        pointer-events: none;
+    }
+
+    /* تنسيقات الفلاتر */
+    .filter-container {
+        margin-bottom: 2rem;
+    }
+
+    .filter-title {
+        font-size: 1.2rem;
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-title i {
+        margin-left: 0.5rem;
+        color: #4f46e5;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        background-color: white;
+        color: #4b5563;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        border-color: #4f46e5;
+        color: #4f46e5;
+        transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+        background-color: #4f46e5;
+        color: white;
+        border-color: #4f46e5;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    /* تنسيقات بطاقات المواد */
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .course-card {
+        background-color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        border: 1px solid #f3f4f6;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: #e5e7eb;
+    }
+
+    .course-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(to bottom, #4f46e5, #818cf8);
+        border-radius: 0 12px 12px 0;
+    }
+
+    .course-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .course-title {
+        font-size: 1.25rem;
+        color: #1f2937;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .course-info {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .info-item i {
+        margin-left: 0.5rem;
+        color: #4f46e5;
+    }
+
+    .semester-badge {
+        position: absolute;
+        top: 0.75rem;
+        left: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .semester-1 {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .semester-2 {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    /* تنسيقات رسالة عدم وجود نتائج */
+    .no-results {
+        text-align: center;
+        padding: 3rem 0;
+        display: none;
+    }
+
+    .no-results i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+
+    .no-results p {
+        color: #6b7280;
+        font-size: 1.25rem;
+    }
+
+    /* زر التنقل */
+    .navigation-button {
+        display: flex;
+        justify-content: center;
+        margin: 3rem 0;
+    }
+
+    .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(to left, #4f46e5, #818cf8);
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .nav-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+        color: white;
+    }
+
+    .nav-btn:active {
+        transform: translateY(0);
+    }
+
+    .nav-btn i {
+        margin-left: 0.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .nav-btn:hover i {
+        transform: translateX(-5px);
+    }
+
+    /* تأثيرات إضافية */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.8s ease forwards;
+        opacity: 0;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    .delay-4 { animation-delay: 0.8s; }
+
+    /* تنسيقات الوضع الليلي */
+    html.dark .search-input,
+    html.dark .filter-btn,
+    html.dark .course-card {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+
+    html.dark .search-input {
+        color: #f3f4f6;
+    }
+
+    html.dark .course-title {
+        color: #f3f4f6;
+    }
+
+    html.dark .filter-title,
+    html.dark .info-item {
+        color: #d1d5db;
+    }
+
+    html.dark .course-header {
+        border-color: #374151;
+    }
+
+    html.dark .filter-btn:not(.active) {
+        color: #d1d5db;
+    }
+
+    html.dark .filter-btn:hover:not(.active) {
+        border-color: #818cf8;
+        color: #818cf8;
+    }
+
+    /* تنسيقات للشاشات الصغيرة */
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .filter-buttons {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-btn {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        .courses-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="courses-section">
+    <h1 class="section-title fade-in">المواد الدراسية</h1>
+
+    <!-- حقل البحث -->
+    <div class="search-container fade-in delay-1">
+        <input type="text" id="course-search" class="search-input" placeholder="ابحث عن مادة دراسية...">
+        <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <!-- فلتر السنة الدراسية -->
+    <div class="filter-container fade-in delay-2">
+        <h2 class="filter-title">
+            <i class="fas fa-calendar-alt"></i>
+            السنة الدراسية
+        </h2>
+        <div class="filter-buttons year-filter">
+            <button class="filter-btn active" data-year="1">السنة الأولى</button>
+            <button class="filter-btn" data-year="2">السنة الثانية</button>
+            <button class="filter-btn" data-year="3">السنة الثالثة</button>
+            <button class="filter-btn" data-year="4">السنة الرابعة</button>
+        </div>
+    </div>
+
+    <!-- فلتر التخصص -->
+    <div class="filter-container specialization-filter fade-in delay-3" data-year="" style="display: none;">
+        <h2 class="filter-title">
+            <i class="fas fa-book"></i>
+            التخصص
+        </h2>
+        <div class="filter-buttons spec-filter">
+            <button class="filter-btn active" data-spec="tech">حاسب آلي</button>
+            <button class="filter-btn" data-spec="lib">المكتبات والمعلومات</button>
+            <button class="filter-btn" data-spec="it">تكنولوجيا المعلومات</button>
+        </div>
+    </div>
+
+    <!-- رسالة عدم وجود نتائج -->
+    <div class="no-results fade-in delay-3" id="no-results">
+        <i class="fas fa-search"></i>
+        <p>لا توجد مواد دراسية مطابقة للبحث</p>
+    </div>
+
+    <!-- شبكة المواد الدراسية -->
+    <div class="courses-grid fade-in delay-4">
+        <!-- السنة الأولى -->
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">المدخل إلى تكنولوجيا التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">المدخل إلى المكتبات والمعلومات</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">المجسمات والمعارض والمتاحف</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">مقدمة في الحاسب الآلي</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">الرسوم التعليمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- الترم الثاني -->
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">تكنولوجيا المعلومات والاتصال في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">مصادر المعرفة <br>في المؤسسات التعليمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">التصميم التعليمي</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="1">
+            <div class="semester-badge semester-2">الترم الثاني</div>
+            <div class="course-header">
+                <h3 class="course-title">صيانة الأجهزة التعليمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الثانية -->
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">تطبيقات الحاسب الآلي في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="2">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">أجهزة عرض</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الثالثة - حاسب آلي -->
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">الحاسب الآلي وتكنولوجيا التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">إنتاج مصادر التعلم الرقمية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الثالثة - مكتبات -->
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">نظم تصنيف المعرفة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">الفهرسة الآلية المقروءة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الثالثة - تكنولوجيا المعلومات -->
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">تطبيقات الإنترنت في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="3" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">تقنيات الطباعة</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الرابعة - حاسب آلي -->
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">شبكات الحاسب الآلي في التعليم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="tech">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">تطبيقات مكتبية 2</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الرابعة - مكتبات -->
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">مركز مصادر التعلم</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="lib">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">اقتناء مصادر المعلومات وإدارتها</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 150</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- السنة الرابعة - تكنولوجيا المعلومات -->
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">تصميم وتطوير بيئات التعلم الإلكترونية</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 200</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-card" data-year="4" data-spec="it">
+            <div class="semester-badge semester-1">الترم الأول</div>
+            <div class="course-header">
+                <h3 class="course-title">التعليم الإلكتروني</h3>
+            </div>
+            <div class="course-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>الدرجة: 100</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>نظري + عملي</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر التنقل -->
+    <div class="navigation-button fade-in delay-4">
+        <a href="{% url 'about' %}" class="nav-btn">
+            <i class="fas fa-info-circle"></i>
+            معلومات عن القسم
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // تأثير الظهور التدريجي للعناصر
+        const fadeElements = document.querySelectorAll('.fade-in');
+        fadeElements.forEach(element => {
+            element.style.opacity = '0';
+            setTimeout(() => {
+                element.style.opacity = '1';
+            }, 100);
+        });
+
+        // فلتر السنة الدراسية
+        const yearButtons = document.querySelectorAll('.year-filter .filter-btn');
+        const specFilter = document.querySelector('.specialization-filter');
+        const courseCards = document.querySelectorAll('.course-card');
+        const noResults = document.getElementById('no-results');
+
+        // تحديد السنة الافتراضية
+        let currentYear = '1';
+        let currentSpec = 'tech';
+
+        // وظيفة لتحديث عرض المواد الدراسية
+        function updateCourses() {
+            let visibleCount = 0;
+            
+            courseCards.forEach(card => {
+                const cardYear = card.getAttribute('data-year');
+                const cardSpec = card.getAttribute('data-spec') || '';
+                
+                // التحقق من تطابق السنة والتخصص
+                const yearMatch = cardYear === currentYear;
+                const specMatch = currentYear === '1' || currentYear === '2' || cardSpec === currentSpec;
+                
+                // التحقق من تطابق البحث
+                const searchText = document.getElementById('course-search').value.trim().toLowerCase();
+                const courseTitle = card.querySelector('.course-title').textContent.toLowerCase();
+                const searchMatch = searchText === '' || courseTitle.includes(searchText);
+                
+                // عرض أو إخفاء البطاقة
+                if (yearMatch && specMatch && searchMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // عرض رسالة عدم وجود نتائج إذا لم يتم العثور على مواد
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+
+        // تحديث عرض فلتر التخصص بناءً على السنة المحددة
+        function updateSpecFilter() {
+            if (currentYear === '3' || currentYear === '4') {
+                specFilter.style.display = 'block';
+            } else {
+                specFilter.style.display = 'none';
+            }
+        }
+
+        // إضافة مستمعي الأحداث لأزرار فلتر السنة
+        yearButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // إزالة الفئة النشطة من جميع الأزرار
+                yearButtons.forEach(btn => btn.classList.remove('active'));
+                // إضافة الفئة النشطة للزر المحدد
+                this.classList.add('active');
+                // تحديث السنة الحالية
+                currentYear = this.getAttribute('data-year');
+                // تحديث عرض فلتر التخصص
+                updateSpecFilter();
+                // تحديث عرض المواد الدراسية
+                updateCourses();
+            });
+        });
+
+        // إضافة مستمعي الأحداث لأزرار فلتر التخصص
+        const specButtons = document.querySelectorAll('.spec-filter .filter-btn');
+        specButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // إزالة الفئة النشطة من جميع الأزرار
+                specButtons.forEach(btn => btn.classList.remove('active'));
+                // إضافة الفئة النشطة للزر المحدد
+                this.classList.add('active');
+                // تحديث التخصص الحالي
+                currentSpec = this.getAttribute('data-spec');
+                // تحديث عرض المواد الدراسية
+                updateCourses();
+            });
+        });
+
+        // إضافة مستمع الأحداث لحقل البحث
+        document.getElementById('course-search').addEventListener('input', function() {
+            updateCourses();
+        });
+
+        // تحديث عرض المواد الدراسية عند تحميل الصفحة
+        updateSpecFilter();
+        updateCourses();
+
+        // تأثير تحريك للبطاقات عند التمرير
+        const animateOnScroll = function() {
+            const cards = document.querySelectorAll('.course-card');
+            
+            cards.forEach(card => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight * 0.9;
+                
+                if (cardPosition < screenPosition) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // تطبيق تأثير الظهور التدريجي عند التمرير
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll(); // تشغيل مرة واحدة عند التحميل
+    });
+</script>
+{% endblock %}
